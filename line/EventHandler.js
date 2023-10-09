@@ -42,6 +42,10 @@ const EventHandler = async function (client, event) {
         "removeAllTrashTalk": /^mic幹話忘光光$/gm,
         "removeOneTrashTalk": /^mic給我忘記這句 (.+)$/gm,
         "readme": /^mic怎麼用$/,
+        "search": {
+            "youtube": /^mic搜yt (.+)$/,
+            "google": /^mic搜google (.+)$/,
+        },
     }
 
     const catchErrFunction = (client, event, err) => {
@@ -231,6 +235,40 @@ const EventHandler = async function (client, event) {
         const echo = imgMsgObj;
         return client.replyMessage(event.replyToken, echo);
     }
+
+    // 搜索youtube
+    //https://www.youtube.com/results?search_query=
+    if (regexObj.search.youtube.exec(reqText)) {
+
+        const regex = new RegExp(regexObj.search.youtube);
+        const outputArr = regex.exec(reqText);
+        const keyword = outputArr[1];
+        const searchurl = "https://www.youtube.com/results?search_query=" + keyword;
+
+
+        const outputMsg = searchurl;
+        const echo = { type: 'text', text: outputMsg };
+        return client.replyMessage(event.replyToken, echo);
+
+    }
+
+    // 搜google
+    // https://www.google.com/search?q=
+    if (regexObj.search.google.exec(reqText)) {
+
+        const regex = new RegExp(regexObj.search.google);
+        const outputArr = regex.exec(reqText);
+        const keyword = outputArr[1];
+        const searchurl = "https://www.google.com/search?q=" + keyword;
+
+
+        const outputMsg = searchurl;
+        const echo = { type: 'text', text: outputMsg };
+        return client.replyMessage(event.replyToken, echo);
+
+    }
+
+
 
 
 }
