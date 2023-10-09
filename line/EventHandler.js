@@ -80,8 +80,12 @@ const EventHandler = function (client, event) {
         const group_id = event.source.groupId;
 
         TrashTalkModel.getOneByTitleAndGroupID(title,group_id).then(res => {
-            let text = res[0].body;
-            // if(!text) text="這句我沒學過0.0";
+            
+            let text = "";
+            text="這句我沒學過0.0";
+            if(res && res[0] && res[0].body){
+                text = res[0].body;
+            }
 
             const echo = { type: 'text', text: text };
             return client.replyMessage(event.replyToken, echo);
