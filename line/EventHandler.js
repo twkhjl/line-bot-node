@@ -1,6 +1,8 @@
 const TrashTalkModel = require("../models/TrashTalkModel");
 const MessageRecordModel = require("../models/MessageRecordModel");
 const UserModel = require("../models/UserModel");
+const ImgModel = require("../models/ImgModel");
+
 const lineApiHandler = require("../line/ApiHandler");
 
 const dateTimeHelper = require("../helpers/dateTimeHelper");
@@ -195,10 +197,18 @@ const EventHandler = async function (client, event) {
 
     // 梗圖
     if (event.message.text == 'mic我要看梗圖') {
+
+        const groupId = event.source.groupId;
+
+        const rawResult = await ImgModel.getRandomByGroupID(groupId);
+        if(!rawResult || rawResult[0]) return;
+        const randomImg = rawResult[0];
+
+
         const imgMsgObj = {
             "type": "image",
-            "originalContentUrl": `https://i.imgur.com/ecfaZLc.jpeg`,
-            "previewImageUrl": `https://i.imgur.com/ecfaZLc.jpeg`,
+            "originalContentUrl": randomImg.original_content_url,
+            "previewImageUrl": randomImg.preview_image_url,
             "animated": true
         }
         const echo = imgMsgObj;
