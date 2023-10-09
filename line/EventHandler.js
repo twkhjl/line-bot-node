@@ -212,7 +212,7 @@ const EventHandler = async function (client, event) {
         const groupId = event.source.groupId;
 
         const rawResult = await ImgModel.getRandomByGroupID(groupId);
-        if(!rawResult || rawResult[0]) return;
+        if(!rawResult || !rawResult[0]) return;
         const randomImg = rawResult[0];
 
 
