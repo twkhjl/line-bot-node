@@ -7,6 +7,7 @@ const lineApiHandler = require("../line/ApiHandler");
 
 const dateTimeHelper = require("../helpers/dateTimeHelper");
 const strHelper = require("../helpers/strHelper");
+const readme = require("./readme");
 
 // event handler
 const EventHandler = async function (client, event) {
@@ -33,6 +34,7 @@ const EventHandler = async function (client, event) {
         "talkTrash": /mic (.+)/gm,
         "removeAllTrashTalk": /mic幹話忘光光/gm,
         "removeOneTrashTalk": /mic給我忘記這句 (.+)/gm,
+        "readme": /mic怎麼用/gm,
     }
     const reqText = event.message.text;
 
@@ -50,6 +52,15 @@ const EventHandler = async function (client, event) {
         })
         return;
     }
+
+    // 顯示教學
+    if (regexObj.readme.exec(reqText)) {
+
+        const echo = { type: 'text', text: readme };
+        return client.replyMessage(event.replyToken, echo);
+        return;
+    }
+
 
     // 將使用者資料新增/更新置資料庫
     if (event.source.userId && event.source.groupId) {
