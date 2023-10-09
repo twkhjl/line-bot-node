@@ -12,8 +12,15 @@ const readme = require("./readme");
 // event handler
 const EventHandler = async function (client, event) {
 
+    let reqText = "";
+
+    if (event.type !== 'message' || event.message.type !== 'text' || !event.source.groupId) {
+        return;
+    }
     // 紀錄群組對話
     if (event.type == 'message' && event.message.type == 'text' && event.source.groupId) {
+        reqText = event.message.text;
+
 
         const data = {
             group_id: event.source.groupId,
@@ -30,13 +37,12 @@ const EventHandler = async function (client, event) {
     }
 
     const regexObj = {
-        "learnTrashTalk": /mic學幹話 (.+):(.+)/gm,
-        "talkTrash": /mic (.+)/gm,
-        "removeAllTrashTalk": /mic幹話忘光光/gm,
-        "removeOneTrashTalk": /mic給我忘記這句 (.+)/gm,
-        "readme": /mic怎麼用/gm,
+        "learnTrashTalk": /^mic學幹話 (.+):(.+)$/gm,
+        "talkTrash": /^mic (.+)/gm,
+        "removeAllTrashTalk": /^mic幹話忘光光$/gm,
+        "removeOneTrashTalk": /^mic給我忘記這句 (.+)$/gm,
+        "readme": /^mic怎麼用$/,
     }
-    const reqText = event.message.text;
 
     const catchErrFunction = (client, event, err) => {
         const outputMsg = "發生錯誤,請找相關人員處理";
@@ -54,7 +60,7 @@ const EventHandler = async function (client, event) {
     }
 
     // 顯示教學
-    if (regexObj.readme.exec(reqText)) {
+    if (reqText == "mic怎麼用") {
 
         const echo = { type: 'text', text: readme };
         return client.replyMessage(event.replyToken, echo);
@@ -212,7 +218,7 @@ const EventHandler = async function (client, event) {
         const groupId = event.source.groupId;
 
         const rawResult = await ImgModel.getRandomByGroupID(groupId);
-        if(!rawResult || !rawResult[0]) return;
+        if (!rawResult || !rawResult[0]) return;
         const randomImg = rawResult[0];
 
 
