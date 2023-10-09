@@ -68,15 +68,14 @@ const EventHandler = async function (client, event) {
 
         const echo = { type: 'text', text: readme };
         return client.replyMessage(event.replyToken, echo);
-        return;
     }
 
 
-    // 將使用者資料新增/更新置資料庫
+    // 將使用者資料新增/更新至資料庫
     if (event.source.userId && event.source.groupId) {
         const userId = event.source.userId;
         const userProfile = await (lineApiHandler.userProfile(event.source.userId));
-        if (!userProfile.userId) {
+        if (!userProfile || !userProfile.userId) {
             return;
         }
 
