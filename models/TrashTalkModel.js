@@ -32,6 +32,47 @@ const TrashTalkModel = {
         });
 
     },
+    removeOneFromGroup: (data) => {
+        
+        if(!data || !data.group_id || !data.title){
+            return Promise.resolve(null);
+        }
+        
+        const sql = `delete from ${tableName} where group_id = ? and title = ?`;
+        const group_id = data.group_id;
+        const title = data.title;
+        const args = [group_id,title];
+
+        return new Promise((resolve, reject) => {
+            db.query(sql, args, (err, rows) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(rows);
+            });
+        });
+
+    },
+    removeAllFromGroup: (data) => {
+        
+        if(!data || !data.group_id){
+            return Promise.resolve(null);
+        }
+        
+        const sql = `delete from ${tableName} where group_id = ?`;
+        const group_id = data.group_id;
+        const args = [group_id];
+
+        return new Promise((resolve, reject) => {
+            db.query(sql, args, (err, rows) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(rows);
+            });
+        });
+
+    },
 
 }
 

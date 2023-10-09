@@ -1,10 +1,13 @@
 const TrashTalkModel = require("../models/TrashTalkModel");
 const MessageRecordModel = require("../models/MessageRecordModel");
+const UserModel = require("../models/UserModel");
+const lineApiHandler = require("../line/ApiHandler");
 
 const dateTimeHelper = require("../helpers/dateTimeHelper");
+const strHelper = require("../helpers/strHelper");
 
 // event handler
-const EventHandler = function (client, event) {
+const EventHandler = async function (client, event) {
 
     // 紀錄群組對話
     if (event.type == 'message' && event.message.type == 'text' && event.source.groupId) {
@@ -26,6 +29,8 @@ const EventHandler = function (client, event) {
     const regexObj = {
         "learnTrashTalk": /mic學幹話 (.+):(.+)/gm,
         "talkTrash": /mic (.+)/gm,
+        "removeAllTrashTalk": /mic幹話忘光光/gm,
+        "removeOneTrashTalk": /mic給我忘記這句 (.+)/gm,
     }
     const reqText = event.message.text;
 
@@ -37,10 +42,54 @@ const EventHandler = function (client, event) {
     };
 
     if (event.message.text == 'groupid') {
-        return console.log(event.source.groupId);
+        const groupId = event.source.groupId;
+        lineApiHandler.groupSummary(event.source.groupId).then(res => {
+            return console.log(res);
+        })
+        return;
     }
-    if (event.message.text == 'userid') {
-        return console.log(event.source.userId);
+
+    // 將使用者資料新增/更新置資料庫
+    if (event.source.userId && event.source.groupId) {
+        const userId = event.source.userId;
+        const userProfile = await (lineApiHandler.userProfile(event.source.userId));
+        if (!userProfile.userId) {
+            return;
+        }
+
+        const resultGetUserById = await (UserModel.getOneByUserID(userId));
+
+
+        let job = "";
+        let data = {};
+        if (!resultGetUserById || resultGetUserById.length <= 0) {
+            job = "insert";
+            for (let [k, v] of Object.entries(userProfile)) {
+                if (["language"].indexOf(k) == -1 && v) {
+                    const keyToSnakeCase = strHelper.camelToSnakeCase(k);
+                    data[keyToSnakeCase] = v;
+                }
+            }
+        }
+
+        if (resultGetUserById && resultGetUserById[0]) {
+            job = "update";
+            data.dataToUpdate = {};
+            for (let [k, v] of Object.entries(resultGetUserById[0])) {
+                if (["id", "user_id", "created_at", "updated_at"].indexOf(k) == -1 && v) {
+                    data["dataToUpdate"][k] = v;
+                }
+            }
+            data.userId = resultGetUserById[0]['user_id'];
+        }
+        let output = {
+            job: job,
+            data: data
+        }
+
+
+        const queryResult = UserModel[output.job](output.data);
+
     }
 
     // 學幹話
@@ -79,11 +128,11 @@ const EventHandler = function (client, event) {
         const title = outputArr[1];
         const group_id = event.source.groupId;
 
-        TrashTalkModel.getOneByTitleAndGroupID(title,group_id).then(res => {
-            
+        TrashTalkModel.getOneByTitleAndGroupID(title, group_id).then(res => {
+
             let text = "";
-            text="這句我沒學過0.0";
-            if(res && res[0] && res[0].body){
+            text = "這句我沒學過0.0";
+            if (res && res[0] && res[0].body) {
                 text = res[0].body;
             }
 
@@ -91,6 +140,53 @@ const EventHandler = function (client, event) {
             return client.replyMessage(event.replyToken, echo);
         }).catch(err => {
             return catchErrFunction(client, err);
+        });
+        return;
+
+    }
+
+    // 刪除特定幹話
+    if (regexObj.removeOneTrashTalk.exec(reqText)) {
+        const regex = new RegExp(regexObj.removeOneTrashTalk);
+        const outputArr = regex.exec(reqText);
+        const title = outputArr[1];
+
+        const data = {
+            group_id: event.source.groupId,
+            title: title,
+
+        };
+
+
+        TrashTalkModel.removeOneFromGroup(data).then(res => {
+            const outputMsg = `好喔,我把 ${title}忘掉惹`;
+            const echo = { type: 'text', text: outputMsg };
+            return client.replyMessage(event.replyToken, echo);
+        }).catch(err => {
+            return catchErrFunction(client, event, err);
+        });
+        return;
+
+    }
+
+    // 刪除所有幹話
+    if (regexObj.removeAllTrashTalk.exec(reqText)) {
+        const regex = new RegExp(regexObj.learnTrashTalk);
+        const outputArr = regex.exec(reqText);
+
+        const data = {
+            group_id: event.source.groupId,
+            user_id: event.source.userId,
+
+        };
+
+
+        TrashTalkModel.removeAllFromGroup(data).then(res => {
+            const outputMsg = "好喔,我全部忘光光惹>_<";
+            const echo = { type: 'text', text: outputMsg };
+            return client.replyMessage(event.replyToken, echo);
+        }).catch(err => {
+            return catchErrFunction(client, event, err);
         });
         return;
 
