@@ -1,6 +1,6 @@
 const dateTimeHelper = {
     getCurrentTimeString: () => {
-        const now = new Date();
+        const now = new Date(new Date().toLocaleString('en', {timeZone: 'Asia/Taipei'}))
         const year = now.getFullYear();
         const month = now.getMonth() + 1;
         const day = now.getDate();
