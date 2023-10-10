@@ -17,27 +17,29 @@ const TrashTalkModel = {
 
     },
 
-    checkTitleExist:(title,group_id)=>{
+    checkTitleExist: (title, group_id) => {
         const sql = `select count(1) as count from ${tableName} where title = ? and group_id = ?`;
-        const args = [title,group_id];
+        const args = [title, group_id];
 
         return new Promise((resolve, reject) => {
             db.query(sql, args, (err, rows) => {
                 if (err) {
                     return reject(err);
                 }
-                if(rows[0] && rows[0].count){
-                    resolve(rows[0].count);
+                if (rows[0] && rows[0].count !== undefined && rows[0].count !== null) {
+                    return resolve(rows[0].count);
                 }
-                resolve(rows);
+                return resolve(rows);
+
+
             });
         });
     },
 
-    getOneByTitleAndGroupID: (title,group_id) => {
+    getOneByTitleAndGroupID: (title, group_id) => {
 
         const sql = `select * from ${tableName} where title = ? AND group_id = ?`;
-        const args = [title,group_id];
+        const args = [title, group_id];
 
         return new Promise((resolve, reject) => {
             db.query(sql, args, (err, rows) => {
@@ -45,7 +47,7 @@ const TrashTalkModel = {
                     return reject(err);
                 }
                 resolve(rows);
-                if(rows[0]){
+                if (rows[0]) {
                     resolve(rows[0]);
                 }
                 resolve(rows);
@@ -54,15 +56,15 @@ const TrashTalkModel = {
 
     },
     removeOneFromGroup: (data) => {
-        
-        if(!data || !data.group_id || !data.title){
+
+        if (!data || !data.group_id || !data.title) {
             return Promise.resolve(null);
         }
-        
+
         const sql = `delete from ${tableName} where group_id = ? and title = ?`;
         const group_id = data.group_id;
         const title = data.title;
-        const args = [group_id,title];
+        const args = [group_id, title];
 
         return new Promise((resolve, reject) => {
             db.query(sql, args, (err, rows) => {
@@ -75,11 +77,11 @@ const TrashTalkModel = {
 
     },
     removeAllFromGroup: (data) => {
-        
-        if(!data || !data.group_id){
+
+        if (!data || !data.group_id) {
             return Promise.resolve(null);
         }
-        
+
         const sql = `delete from ${tableName} where group_id = ?`;
         const group_id = data.group_id;
         const args = [group_id];

@@ -29,7 +29,10 @@ const ImgModel = {
                 if (err) {
                     return reject(err);
                 }
-                resolve(rows);
+                if(rows[0]){
+                    return resolve(rows[0]);
+                }
+                return resolve(rows);
             });
         });
     },

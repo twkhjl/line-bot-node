@@ -16,11 +16,10 @@ const ApiHandler = {
     */
     groupSummary: async (groupId) => {
         const url = api.groupSummary.replace("{groupId}", groupId);
-        const accessToken = lineConfig.channelAccessToken;
 
         const headers = {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`,
+            'Authorization': `Bearer ${channelAccessToken}`,
         }
 
         const response = await fetch(url, {
@@ -40,11 +39,10 @@ const ApiHandler = {
      */
     userProfile: async (userId) => {
         const url = api.userProfile.replace("{userId}", userId);
-        const accessToken = lineConfig.channelAccessToken;
 
         const headers = {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`,
+            'Authorization': `Bearer ${channelAccessToken}`,
         }
 
         const response = await fetch(url, {

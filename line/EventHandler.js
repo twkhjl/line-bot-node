@@ -3,17 +3,22 @@ const MessageRecordModel = require("../models/MessageRecordModel");
 const UserModel = require("../models/UserModel");
 const ImgModel = require("../models/ImgModel");
 
-const lineApiHandler = require("../line/ApiHandler");
-
 const dateTimeHelper = require("../helpers/dateTimeHelper");
 const strHelper = require("../helpers/strHelper");
+
+const lineApiHandler = require("./ApiHandler");
+const linReplyHandler = require("./ReplyHandler");
 const readme = require("./readme");
+const ApiHandler = require("./ApiHandler");
 
 // event handler
 const EventHandler = async function (client, event) {
 
     const eventMessageText = event.message && event.message.text ? event.message.text : "";
     const eventMessageType = event.message && event.message.type ? event.message.type : "";
+    const eventMessageQuoteToken = event.message && event.message.quoteToken ? event.message.quoteToken : "";
+    const eventReplyToken = event.replyToken ? event.replyToken : "";
+
     const userId = event.source && event.source.userId ? event.source.userId : "";
     const groupId = event.source && event.source.groupId ? event.source.groupId : "";
 
@@ -35,104 +40,63 @@ const EventHandler = async function (client, event) {
 
         };
 
-        MessageRecordModel.insert(data).then(res => {
-        }).catch(err => {
+        let displayName = "";
+        let userProfileErr = 0;
+        if (userId) {
+            userProfile = await ApiHandler.userProfile(userId).catch(err => {
+                userProfileErr = 1;
+                console.log(err);
+            })
+        }
+
+        if(userProfile && userProfile.displayName){
+            data.display_name = userProfile.displayName;
+        }
+
+        await MessageRecordModel.insert(data).catch(err => {
+            return console.log(err);
         });
     }
 
-    const regexObj = {
-        "readme": /^mic怎麼用$/,
+    // line bot指令
+    const commandObj = require("./command");
 
-        "learnTrashTalk": /^mic學幹話 (.+)[\s](.+)$/gm,
-        "talkTrash": /^mic (.+)/gm,
-        "removeAllTrashTalk": /^mic幹話忘光光$/gm,
-        "removeOneTrashTalk": /^mic給我忘記 (.+)$/gm,
-
-        "showRandomImg": /^mic圖呢$/,
-
-
-        "search": {
-            "youtube": /^mic搜yt (.+)$/,
-            "google": /^mic搜google (.+)$/,
-        },
-    }
-
-    const catchErrFunction = (client, event, err) => {
-        const outputMsg = "發生錯誤,請找相關人員處理";
-        console.log(err);
-        const echo = { type: 'text', text: outputMsg };
-        return client.replyMessage(event.replyToken, echo);
-    };
-
+    // 取得群組id用
     if (eventMessageText == 'groupid' && groupId) {
-        lineApiHandler.groupSummary(groupId).then(res => {
-            return console.log(res);
-        })
-        return;
+
+        let groupSummaryErr = 0;
+        const output = await lineApiHandler.groupSummary(groupId).catch(err => {
+            groupSummaryErr = 1;
+            return console.log("err")
+        });
+        if (groupSummaryErr) return;
+        return console.log(output);
     }
 
     // 顯示教學
-    if (regexObj.readme.exec(eventMessageText)) {
-
-        const echo = { type: 'text', text: readme };
-        return client.replyMessage(event.replyToken, echo);
-    }
-
-
-    // 將使用者資料新增/更新至資料庫
-    if (userId && groupId) {
-        const userProfile = await (lineApiHandler.userProfile(userId));
-        if (!userProfile || !userProfile.userId) {
-            return;
-        }
-
-        const resultGetUserById = await (UserModel.getOneByUserID(userId));
-
-
-        let job = "";
-        let data = {};
-        if (!resultGetUserById || resultGetUserById.length <= 0) {
-            job = "insert";
-            for (let [k, v] of Object.entries(userProfile)) {
-                if (["language"].indexOf(k) == -1 && v) {
-                    const keyToSnakeCase = strHelper.camelToSnakeCase(k);
-                    data[keyToSnakeCase] = v;
-                }
-            }
-        }
-
-        if (resultGetUserById && resultGetUserById[0]) {
-            job = "update";
-            data.dataToUpdate = {};
-            for (let [k, v] of Object.entries(resultGetUserById[0])) {
-                if (["id", "user_id", "created_at", "updated_at"].indexOf(k) == -1 && v) {
-                    data["dataToUpdate"][k] = v;
-                }
-            }
-            data.userId = resultGetUserById[0]['user_id'];
-        }
-        let output = {
-            job: job,
-            data: data
-        }
-
-
-        const queryResult = UserModel[output.job](output.data);
-
+    if (commandObj.readme.exec(eventMessageText)) {
+        const outputMsg = readme;
+        return linReplyHandler.replyWithText(client, event, outputMsg);
     }
 
     // 學幹話
-    if (regexObj.learnTrashTalk.exec(eventMessageText)) {
-        const regex = new RegExp(regexObj.learnTrashTalk);
+    if (commandObj.learnTrashTalk.exec(eventMessageText)) {
+        const regex = new RegExp(commandObj.learnTrashTalk);
         const outputArr = regex.exec(eventMessageText);
         const title = outputArr[1];
         const body = outputArr[2];
 
-        const isExist = await TrashTalkModel.checkTitleExist(title,groupId);
+        let checkTitleExistHasErr = 0;
+        const isExist = await TrashTalkModel.checkTitleExist(title, groupId).catch(err => {
+            checkTitleExistHasErr = 1;
+            console.log(err);
+        });
+        if (checkTitleExistHasErr) return;
+
+
         if (isExist >= 1) {
             const outputMsg = "這句已經學過惹";
-            const echo = { type: 'text', text: outputMsg };
-            return client.replyMessage(event.replyToken, echo);
+            return linReplyHandler.replyWithText(client, event, outputMsg);
         }
 
         const data = {
@@ -142,119 +106,129 @@ const EventHandler = async function (client, event) {
             created_at: dateTimeHelper.getCurrentTimeString(),
         };
 
-
-        TrashTalkModel.insert(data).then(res => {
-
-            const outputMsg = "好喔,學起來惹";
-            const echo = { type: 'text', text: outputMsg };
-            return client.replyMessage(event.replyToken, echo);
-        }).catch(err => {
-            return catchErrFunction(client, event, err);
+        let insertHasErr = 0;
+        const queryResult = await TrashTalkModel.insert(data).catch(err => {
+            insertHasErr = 1;
+            console.log(err);
         });
+        if (insertHasErr) return;
+
+
+        if (queryResult.insertId) {
+            const outputMsg = "好喔,學起來惹";
+            return linReplyHandler.replyWithText(client, event, outputMsg);
+        }
+
         return;
 
     }
 
     // 講幹話
-    if (regexObj.talkTrash.exec(eventMessageText)) {
-        const regex = new RegExp(regexObj.talkTrash);
+    if (commandObj.talkTrash.exec(eventMessageText)) {
+        const regex = new RegExp(commandObj.talkTrash);
         const outputArr = regex.exec(eventMessageText);
 
         const title = outputArr[1];
 
-        const queryResult = await TrashTalkModel.getOneByTitleAndGroupID(title, groupId);
-        if(!queryResult){
-            const text = "這句我沒學過0.0";
-            const echo = { type: 'text', text: text };
-            return client.replyMessage(event.replyToken, echo);
+        let getOneByTitleAndGroupIDErr = 0;
+        const queryResult = await TrashTalkModel.getOneByTitleAndGroupID(title, groupId).catch(err => {
+            getOneByTitleAndGroupIDErr = 1;
+            return console.log(err);
+        });
+        if (getOneByTitleAndGroupIDErr) return;
+
+        if (!queryResult || queryResult.length <= 0) {
+            const outputMsg = "這句我沒學過0.0";
+            return linReplyHandler.replyWithText(client, event, outputMsg);
+
         }
 
-        TrashTalkModel.getOneByTitleAndGroupID(title, groupId).then(res => {
-
-            let text = "";
-            text = "這句我沒學過0.0";
-            if (res && res[0] && res[0].body) {
-                text = res[0].body;
-            }
-
-            const echo = { type: 'text', text: text };
-            return client.replyMessage(event.replyToken, echo);
-        }).catch(err => {
-            return catchErrFunction(client, err);
-        });
+        if (queryResult && queryResult[0] && queryResult[0].body) {
+            const outputMsg = queryResult[0].body;
+            return linReplyHandler.replyWithText(client, event, outputMsg);
+        }
         return;
 
     }
 
     // 刪除特定幹話
-    if (regexObj.removeOneTrashTalk.exec(eventMessageText)) {
-        const regex = new RegExp(regexObj.removeOneTrashTalk);
+    if (commandObj.removeOneTrashTalk.exec(eventMessageText)) {
+        const regex = new RegExp(commandObj.removeOneTrashTalk);
         const outputArr = regex.exec(eventMessageText);
         const title = outputArr[1];
+
+        let checkTitleExistHasErr = 0;
+        const isExist = await TrashTalkModel.checkTitleExist(title, groupId).catch(err => {
+            checkTitleExistHasErr = 1;
+            console.log(err);
+        });
+        if (checkTitleExistHasErr) return;
+
+        if (isExist <= 0) {
+            const outputMsg = "這句我沒學過,不用刪辣";
+            return linReplyHandler.replyWithText(client, event, outputMsg);
+        }
 
         const data = {
             group_id: groupId,
             title: title,
-
         };
 
-
-        TrashTalkModel.removeOneFromGroup(data).then(res => {
-            const outputMsg = `好喔,我把"${title}"忘掉惹`;
-            const echo = { type: 'text', text: outputMsg };
-            return client.replyMessage(event.replyToken, echo);
-        }).catch(err => {
-            return catchErrFunction(client, event, err);
+        let removeOneFromGroupErr = 0;
+        await TrashTalkModel.removeOneFromGroup(data).catch(err => {
+            removeOneFromGroupErr = 1;
+            return console.log(err);
         });
-        return;
+        if (removeOneFromGroupErr) return;
+
+        const outputMsg = `好喔,我把"${title}"忘掉惹`;
+        return linReplyHandler.replyWithText(client, event, outputMsg);
 
     }
 
     // 刪除所有幹話
-    if (regexObj.removeAllTrashTalk.exec(eventMessageText)) {
-        const regex = new RegExp(regexObj.learnTrashTalk);
+    if (commandObj.removeAllTrashTalk.exec(eventMessageText)) {
+        const regex = new RegExp(commandObj.learnTrashTalk);
         const outputArr = regex.exec(eventMessageText);
 
         const data = {
             group_id: groupId,
         };
 
-
-        TrashTalkModel.removeAllFromGroup(data).then(res => {
-            const outputMsg = "好喔,我全部忘光光惹>_<";
-            const echo = { type: 'text', text: outputMsg };
-            return client.replyMessage(event.replyToken, echo);
-        }).catch(err => {
-            return catchErrFunction(client, event, err);
+        let removeAllFromGroupErr = 0;
+        const removeAllFromGroupResult = TrashTalkModel.removeAllFromGroup(data).catch(err => {
+            removeAllFromGroupErr = 1;
+            return console.log(err);
         });
-        return;
+        if (removeAllFromGroupErr) return;
+
+        const outputMsg = "好喔,我全部忘光光惹>_<";
+        return linReplyHandler.replyWithText(client, event, outputMsg);
 
     }
 
 
     // 隨機梗圖
-    if (regexObj.showRandomImg.exec(eventMessageText)) {
+    if (commandObj.showRandomImg.exec(eventMessageText)) {
 
-        const rawResult = await ImgModel.getRandomImg();
-        if (!rawResult || !rawResult[0]) return;
-        const randomImg = rawResult[0];
+        let getRandomImgErr = 0;
+        const randomImg = await ImgModel.getRandomImg().catch(err => {
+            removeAllFromGroupErr = 1;
+            return console.log(err);
+        });
+        if (getRandomImgErr) return;;
 
+        if (!randomImg || !randomImg.original_content_url || !preview_image_url) return;
 
-        const imgMsgObj = {
-            "type": "image",
-            "originalContentUrl": randomImg.original_content_url,
-            "previewImageUrl": randomImg.preview_image_url,
-            "animated": true
-        }
-        const echo = imgMsgObj;
-        return client.replyMessage(event.replyToken, echo);
+        return linReplyHandler.replyWithImg(client, event, randomImg.original_content_url, randomImg.preview_image_url);
+
     }
 
     // 搜索youtube
     //https://www.youtube.com/results?search_query=
-    if (regexObj.search.youtube.exec(eventMessageText)) {
+    if (commandObj.search.youtube.exec(eventMessageText)) {
 
-        const regex = new RegExp(regexObj.search.youtube);
+        const regex = new RegExp(commandObj.search.youtube);
         const outputArr = regex.exec(eventMessageText);
         const keyword = outputArr[1];
         const searchurl = "https://www.youtube.com/results?search_query=" + keyword;
@@ -262,28 +236,24 @@ const EventHandler = async function (client, event) {
 
         const outputMsg = searchurl;
         const echo = { type: 'text', text: outputMsg };
-        return client.replyMessage(event.replyToken, echo);
+        return client.replyMessage(eventReplyToken, echo);
 
     }
 
     // 搜google
     // https://www.google.com/search?q=
-    if (regexObj.search.google.exec(eventMessageText)) {
+    if (commandObj.search.google.exec(eventMessageText)) {
 
-        const regex = new RegExp(regexObj.search.google);
+        const regex = new RegExp(commandObj.search.google);
         const outputArr = regex.exec(eventMessageText);
         const keyword = outputArr[1];
         const searchurl = "https://www.google.com/search?q=" + keyword;
 
-
         const outputMsg = searchurl;
         const echo = { type: 'text', text: outputMsg };
-        return client.replyMessage(event.replyToken, echo);
+        return client.replyMessage(eventReplyToken, echo);
 
     }
-
-
-
 
 }
 
