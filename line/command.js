@@ -8,11 +8,11 @@ const command = {
 
     "showRandomImg": /^mic圖呢$/,
 
-    "showTotalDialogStatistic":/^mic我要看群組話量統計$/,
+    "showRainfullRate":/^mic明天(.+)區?會下雨嗎$/,
 
     "search": {
         "youtube": /^mic搜yt (.+)$/,
-        "google": /^mic搜google (.+)$/,
+        "google": /^mic搜 (.+)$/,
         "googleMap": /^mic導航 (.+)到(.+)$/,
     },
 };

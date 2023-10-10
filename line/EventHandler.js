@@ -12,6 +12,9 @@ const readme = require("./readme");
 const ApiHandler = require("./ApiHandler");
 const ReplyHandler = require("./ReplyHandler");
 
+const cwaApi = require("../API/cwaApi");
+const weatherDataHandler = require("../API/weather/DataHandler");
+
 // event handler
 const EventHandler = async function (client, event) {
 
@@ -23,7 +26,7 @@ const EventHandler = async function (client, event) {
     const userId = event.source && event.source.userId ? event.source.userId : "";
     const groupId = event.source && event.source.groupId ? event.source.groupId : "";
 
-    
+
 
     // linebot僅限群組使用
     if (!groupId) {
@@ -31,8 +34,6 @@ const EventHandler = async function (client, event) {
     }
     // 紀錄群組對話
     if (event.type == 'message' && eventMessageType == 'text' && groupId) {
-
-
 
         const data = {
             group_id: groupId,
@@ -43,12 +44,13 @@ const EventHandler = async function (client, event) {
 
         };
 
-        let displayName = "";
         let userProfileErr = 0;
+        let userProfile = null;
         if (userId) {
             userProfile = await ApiHandler.userProfile(userId).catch(err => {
                 userProfileErr = 1;
                 console.log(err);
+                return;
             })
         }
 
@@ -79,12 +81,6 @@ const EventHandler = async function (client, event) {
     // 顯示教學
     if (commandObj.readme.exec(eventMessageText)) {
         const outputMsg = readme;
-        return linReplyHandler.replyWithText(client, event, outputMsg);
-    }
-
-    // 總話量統計
-    if (commandObj.showTotalDialogStatistic.exec(eventMessageText)) {
-        const outputMsg = "豪";
         return linReplyHandler.replyWithText(client, event, outputMsg);
     }
 
@@ -272,6 +268,28 @@ const EventHandler = async function (client, event) {
 
         return linReplyHandler.replyWithText(client, event, outputMsg);
 
+
+    }
+
+    // 查詢高雄特定行政區明天降雨機率
+    if (commandObj.showRainfullRate.exec(eventMessageText)) {
+        const regex = new RegExp(commandObj.showRainfullRate);
+        const outputArr = regex.exec(eventMessageText);
+        let districtKeyword = outputArr[1];
+
+
+        if (!districtKeyword.includes("區")) {
+            districtKeyword += "區";
+        }
+
+        let getRainfullRateErr = 0;
+        const outputMsg = await weatherDataHandler.getRainfullRate(districtKeyword).catch(err => {
+            console.log(err);
+            getRainfullRateErr = 1;
+            return;
+        });
+        if (getRainfullRateErr) return;
+        return linReplyHandler.replyWithText(client, event, outputMsg);
 
     }
 
