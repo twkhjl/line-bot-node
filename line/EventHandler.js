@@ -12,21 +12,25 @@ const readme = require("./readme");
 // event handler
 const EventHandler = async function (client, event) {
 
-    let reqText = "";
+    const eventMessageText = event.message && event.message.text ? event.message.text : "";
+    const eventMessageType = event.message && event.message.type ? event.message.type : "";
+    const userId = event.source && event.source.userId ? event.source.userId : "";
+    const groupId = event.source && event.source.groupId ? event.source.groupId : "";
 
-    if (event.type !== 'message' || event.message.type !== 'text' || !event.source.groupId) {
+
+    if (!groupId) {
         return;
     }
     // 紀錄群組對話
-    if (event.type == 'message' && event.message.type == 'text' && event.source.groupId) {
-        reqText = event.message.text;
+    if (event.type == 'message' && eventMessageType == 'text' && groupId) {
+
 
 
         const data = {
-            group_id: event.source.groupId,
-            user_id: event.source.userId,
-            message_type: event.message.type,
-            message: event.message.text,
+            group_id: groupId,
+            user_id: userId,
+            message_type: eventMessageType,
+            message: eventMessageText,
             created_at: dateTimeHelper.getCurrentTimeString(),
 
         };
@@ -37,11 +41,16 @@ const EventHandler = async function (client, event) {
     }
 
     const regexObj = {
-        "learnTrashTalk": /^mic學幹話 (.+):(.+)$/gm,
+        "readme": /^mic怎麼用$/,
+
+        "learnTrashTalk": /^mic學幹話 (.+)[\s](.+)$/gm,
         "talkTrash": /^mic (.+)/gm,
         "removeAllTrashTalk": /^mic幹話忘光光$/gm,
-        "removeOneTrashTalk": /^mic給我忘記這句 (.+)$/gm,
-        "readme": /^mic怎麼用$/,
+        "removeOneTrashTalk": /^mic給我忘記 (.+)$/gm,
+
+        "showRandomImg": /^mic圖呢$/,
+
+
         "search": {
             "youtube": /^mic搜yt (.+)$/,
             "google": /^mic搜google (.+)$/,
@@ -55,16 +64,15 @@ const EventHandler = async function (client, event) {
         return client.replyMessage(event.replyToken, echo);
     };
 
-    if (event.message.text == 'groupid') {
-        const groupId = event.source.groupId;
-        lineApiHandler.groupSummary(event.source.groupId).then(res => {
+    if (eventMessageText == 'groupid' && groupId) {
+        lineApiHandler.groupSummary(groupId).then(res => {
             return console.log(res);
         })
         return;
     }
 
     // 顯示教學
-    if (reqText == "mic怎麼用") {
+    if (regexObj.readme.exec(eventMessageText)) {
 
         const echo = { type: 'text', text: readme };
         return client.replyMessage(event.replyToken, echo);
@@ -72,9 +80,8 @@ const EventHandler = async function (client, event) {
 
 
     // 將使用者資料新增/更新至資料庫
-    if (event.source.userId && event.source.groupId) {
-        const userId = event.source.userId;
-        const userProfile = await (lineApiHandler.userProfile(event.source.userId));
+    if (userId && groupId) {
+        const userProfile = await (lineApiHandler.userProfile(userId));
         if (!userProfile || !userProfile.userId) {
             return;
         }
@@ -115,18 +122,24 @@ const EventHandler = async function (client, event) {
     }
 
     // 學幹話
-    if (regexObj.learnTrashTalk.exec(reqText)) {
+    if (regexObj.learnTrashTalk.exec(eventMessageText)) {
         const regex = new RegExp(regexObj.learnTrashTalk);
-        const outputArr = regex.exec(reqText);
+        const outputArr = regex.exec(eventMessageText);
         const title = outputArr[1];
         const body = outputArr[2];
+
+        const isExist = await TrashTalkModel.checkTitleExist(title,groupId);
+        if (isExist >= 1) {
+            const outputMsg = "這句已經學過惹";
+            const echo = { type: 'text', text: outputMsg };
+            return client.replyMessage(event.replyToken, echo);
+        }
+
         const data = {
-            group_id: event.source.groupId,
-            user_id: event.source.userId,
+            group_id: groupId,
             title: title,
             body: body,
             created_at: dateTimeHelper.getCurrentTimeString(),
-
         };
 
 
@@ -143,14 +156,20 @@ const EventHandler = async function (client, event) {
     }
 
     // 講幹話
-    if (regexObj.talkTrash.exec(reqText)) {
+    if (regexObj.talkTrash.exec(eventMessageText)) {
         const regex = new RegExp(regexObj.talkTrash);
-        const outputArr = regex.exec(reqText);
+        const outputArr = regex.exec(eventMessageText);
 
         const title = outputArr[1];
-        const group_id = event.source.groupId;
 
-        TrashTalkModel.getOneByTitleAndGroupID(title, group_id).then(res => {
+        const queryResult = await TrashTalkModel.getOneByTitleAndGroupID(title, groupId);
+        if(!queryResult){
+            const text = "這句我沒學過0.0";
+            const echo = { type: 'text', text: text };
+            return client.replyMessage(event.replyToken, echo);
+        }
+
+        TrashTalkModel.getOneByTitleAndGroupID(title, groupId).then(res => {
 
             let text = "";
             text = "這句我沒學過0.0";
@@ -168,20 +187,20 @@ const EventHandler = async function (client, event) {
     }
 
     // 刪除特定幹話
-    if (regexObj.removeOneTrashTalk.exec(reqText)) {
+    if (regexObj.removeOneTrashTalk.exec(eventMessageText)) {
         const regex = new RegExp(regexObj.removeOneTrashTalk);
-        const outputArr = regex.exec(reqText);
+        const outputArr = regex.exec(eventMessageText);
         const title = outputArr[1];
 
         const data = {
-            group_id: event.source.groupId,
+            group_id: groupId,
             title: title,
 
         };
 
 
         TrashTalkModel.removeOneFromGroup(data).then(res => {
-            const outputMsg = `好喔,我把 ${title}忘掉惹`;
+            const outputMsg = `好喔,我把"${title}"忘掉惹`;
             const echo = { type: 'text', text: outputMsg };
             return client.replyMessage(event.replyToken, echo);
         }).catch(err => {
@@ -192,14 +211,12 @@ const EventHandler = async function (client, event) {
     }
 
     // 刪除所有幹話
-    if (regexObj.removeAllTrashTalk.exec(reqText)) {
+    if (regexObj.removeAllTrashTalk.exec(eventMessageText)) {
         const regex = new RegExp(regexObj.learnTrashTalk);
-        const outputArr = regex.exec(reqText);
+        const outputArr = regex.exec(eventMessageText);
 
         const data = {
-            group_id: event.source.groupId,
-            user_id: event.source.userId,
-
+            group_id: groupId,
         };
 
 
@@ -215,12 +232,10 @@ const EventHandler = async function (client, event) {
     }
 
 
-    // 梗圖
-    if (event.message.text == 'mic我要看梗圖') {
+    // 隨機梗圖
+    if (regexObj.showRandomImg.exec(eventMessageText)) {
 
-        const groupId = event.source.groupId;
-
-        const rawResult = await ImgModel.getRandomByGroupID(groupId);
+        const rawResult = await ImgModel.getRandomImg();
         if (!rawResult || !rawResult[0]) return;
         const randomImg = rawResult[0];
 
@@ -237,10 +252,10 @@ const EventHandler = async function (client, event) {
 
     // 搜索youtube
     //https://www.youtube.com/results?search_query=
-    if (regexObj.search.youtube.exec(reqText)) {
+    if (regexObj.search.youtube.exec(eventMessageText)) {
 
         const regex = new RegExp(regexObj.search.youtube);
-        const outputArr = regex.exec(reqText);
+        const outputArr = regex.exec(eventMessageText);
         const keyword = outputArr[1];
         const searchurl = "https://www.youtube.com/results?search_query=" + keyword;
 
@@ -253,10 +268,10 @@ const EventHandler = async function (client, event) {
 
     // 搜google
     // https://www.google.com/search?q=
-    if (regexObj.search.google.exec(reqText)) {
+    if (regexObj.search.google.exec(eventMessageText)) {
 
         const regex = new RegExp(regexObj.search.google);
-        const outputArr = regex.exec(reqText);
+        const outputArr = regex.exec(eventMessageText);
         const keyword = outputArr[1];
         const searchurl = "https://www.google.com/search?q=" + keyword;
 

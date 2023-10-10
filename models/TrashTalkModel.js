@@ -17,6 +17,23 @@ const TrashTalkModel = {
 
     },
 
+    checkTitleExist:(title,group_id)=>{
+        const sql = `select count(1) as count from ${tableName} where title = ? and group_id = ?`;
+        const args = [title,group_id];
+
+        return new Promise((resolve, reject) => {
+            db.query(sql, args, (err, rows) => {
+                if (err) {
+                    return reject(err);
+                }
+                if(rows[0] && rows[0].count){
+                    resolve(rows[0].count);
+                }
+                resolve(rows);
+            });
+        });
+    },
+
     getOneByTitleAndGroupID: (title,group_id) => {
 
         const sql = `select * from ${tableName} where title = ? AND group_id = ?`;
@@ -26,6 +43,10 @@ const TrashTalkModel = {
             db.query(sql, args, (err, rows) => {
                 if (err) {
                     return reject(err);
+                }
+                resolve(rows);
+                if(rows[0]){
+                    resolve(rows[0]);
                 }
                 resolve(rows);
             });
