@@ -227,7 +227,7 @@ const EventHandler = async function (client, event) {
         });
         if (getRandomImgErr) return;;
 
-        if (!randomImg || !randomImg.original_content_url || !preview_image_url) return;
+        if (!randomImg || !randomImg.original_content_url || !randomImg.preview_image_url) return;
 
         return linReplyHandler.replyWithImg(client, event, randomImg.original_content_url, randomImg.preview_image_url);
 
