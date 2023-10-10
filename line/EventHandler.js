@@ -10,6 +10,7 @@ const lineApiHandler = require("./ApiHandler");
 const linReplyHandler = require("./ReplyHandler");
 const readme = require("./readme");
 const ApiHandler = require("./ApiHandler");
+const ReplyHandler = require("./ReplyHandler");
 
 // event handler
 const EventHandler = async function (client, event) {
@@ -22,7 +23,9 @@ const EventHandler = async function (client, event) {
     const userId = event.source && event.source.userId ? event.source.userId : "";
     const groupId = event.source && event.source.groupId ? event.source.groupId : "";
 
+    
 
+    // linebot僅限群組使用
     if (!groupId) {
         return;
     }
@@ -49,7 +52,7 @@ const EventHandler = async function (client, event) {
             })
         }
 
-        if(userProfile && userProfile.displayName){
+        if (userProfile && userProfile.displayName) {
             data.display_name = userProfile.displayName;
         }
 
@@ -76,6 +79,12 @@ const EventHandler = async function (client, event) {
     // 顯示教學
     if (commandObj.readme.exec(eventMessageText)) {
         const outputMsg = readme;
+        return linReplyHandler.replyWithText(client, event, outputMsg);
+    }
+
+    // 總話量統計
+    if (commandObj.showTotalDialogStatistic.exec(eventMessageText)) {
+        const outputMsg = "豪";
         return linReplyHandler.replyWithText(client, event, outputMsg);
     }
 
@@ -196,7 +205,7 @@ const EventHandler = async function (client, event) {
         };
 
         let removeAllFromGroupErr = 0;
-        const removeAllFromGroupResult = TrashTalkModel.removeAllFromGroup(data).catch(err => {
+        TrashTalkModel.removeAllFromGroup(data).catch(err => {
             removeAllFromGroupErr = 1;
             return console.log(err);
         });
@@ -231,12 +240,10 @@ const EventHandler = async function (client, event) {
         const regex = new RegExp(commandObj.search.youtube);
         const outputArr = regex.exec(eventMessageText);
         const keyword = outputArr[1];
-        const searchurl = "https://www.youtube.com/results?search_query=" + keyword;
+        const outputMsg = "https://www.youtube.com/results?search_query=" + keyword;
 
+        return linReplyHandler.replyWithText(client, event, outputMsg);
 
-        const outputMsg = searchurl;
-        const echo = { type: 'text', text: outputMsg };
-        return client.replyMessage(eventReplyToken, echo);
 
     }
 
@@ -247,13 +254,27 @@ const EventHandler = async function (client, event) {
         const regex = new RegExp(commandObj.search.google);
         const outputArr = regex.exec(eventMessageText);
         const keyword = outputArr[1];
-        const searchurl = "https://www.google.com/search?q=" + keyword;
+        const outputMsg = "https://www.google.com/search?q=" + keyword;
 
-        const outputMsg = searchurl;
-        const echo = { type: 'text', text: outputMsg };
-        return client.replyMessage(eventReplyToken, echo);
+        return linReplyHandler.replyWithText(client, event, outputMsg);
 
     }
+
+    // google導航
+    // https://www.google.com.tw/maps/dir/地點1/地點2
+    if (commandObj.search.googleMap.exec(eventMessageText)) {
+
+        const regex = new RegExp(commandObj.search.googleMap);
+        const outputArr = regex.exec(eventMessageText);
+        const startLocation = outputArr[1];
+        const goal = outputArr[2];
+        const outputMsg = `https://www.google.com.tw/maps/dir/${startLocation}/${goal}`;
+
+        return linReplyHandler.replyWithText(client, event, outputMsg);
+
+
+    }
+
 
 }
 

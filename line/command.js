@@ -8,10 +8,12 @@ const command = {
 
     "showRandomImg": /^mic圖呢$/,
 
+    "showTotalDialogStatistic":/^mic我要看群組話量統計$/,
 
     "search": {
         "youtube": /^mic搜yt (.+)$/,
         "google": /^mic搜google (.+)$/,
+        "googleMap": /^mic導航 (.+)到(.+)$/,
     },
 };
 

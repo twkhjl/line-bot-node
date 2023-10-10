@@ -1,10 +1,10 @@
 const ReplyHandler = {
 
     replyWithText: (client, event, text) => {
-        
-        if(!client) return false;
-        if(!event) return false;
-        if(!text) return false;
+
+        if (!client) return false;
+        if (!event) return false;
+        if (!text) return false;
 
         const echo = {
             type: 'text',
@@ -15,10 +15,10 @@ const ReplyHandler = {
     },
 
     replyWithImg: (client, event, originalContentUrl, previewImageUrl = null) => {
-        
-        if(!client) return false;
-        if(!event) return false;
-        if(!originalContentUrl) return false;
+
+        if (!client) return false;
+        if (!event) return false;
+        if (!originalContentUrl) return false;
 
         const echo = {
             type: "image",
@@ -27,7 +27,25 @@ const ReplyHandler = {
             animated: true
         }
         return client.replyMessage(event.replyToken, echo);
-    }
+    },
+    
+    // https://developers.line.biz/en/docs/messaging-api/sticker-list/#sticker-definitions
+    replyWithSticker: (client, event, packageId, stickerId) => {
+
+        if (!client) return false;
+        if (!event) return false;
+        if (!packageId) return false;
+        if (!stickerId) return false;
+
+        const echo = {
+            type: "sticker",
+            packageId: packageId,
+            stickerId: stickerId,
+            quoteToken: event.message.quoteToken
+
+        }
+        return client.replyMessage(event.replyToken, echo);
+    },
 
 }
 
