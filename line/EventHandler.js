@@ -1,18 +1,14 @@
 const TrashTalkModel = require("../models/TrashTalkModel");
 const MessageRecordModel = require("../models/MessageRecordModel");
-const UserModel = require("../models/UserModel");
 const ImgModel = require("../models/ImgModel");
 
 const dateTimeHelper = require("../helpers/dateTimeHelper");
-const strHelper = require("../helpers/strHelper");
 
 const lineApiHandler = require("./ApiHandler");
 const linReplyHandler = require("./ReplyHandler");
 const readme = require("./readme");
 const ApiHandler = require("./ApiHandler");
-const ReplyHandler = require("./ReplyHandler");
 
-const cwaApi = require("../API/cwaApi");
 const weatherDataHandler = require("../API/weather/DataHandler");
 
 // event handler
@@ -20,8 +16,6 @@ const EventHandler = async function (client, event) {
 
     const eventMessageText = event.message && event.message.text ? event.message.text : "";
     const eventMessageType = event.message && event.message.type ? event.message.type : "";
-    const eventMessageQuoteToken = event.message && event.message.quoteToken ? event.message.quoteToken : "";
-    const eventReplyToken = event.replyToken ? event.replyToken : "";
 
     const userId = event.source && event.source.userId ? event.source.userId : "";
     const groupId = event.source && event.source.groupId ? event.source.groupId : "";
@@ -70,7 +64,7 @@ const EventHandler = async function (client, event) {
     if (eventMessageText == 'groupid' && groupId) {
 
         let groupSummaryErr = 0;
-        const output = await lineApiHandler.groupSummary(groupId).catch(err => {
+        const output = await lineApiHandler.groupSummary(groupId).catch(() => {
             groupSummaryErr = 1;
             return console.log("err")
         });
@@ -193,8 +187,6 @@ const EventHandler = async function (client, event) {
 
     // 刪除所有幹話
     if (commandObj.removeAllTrashTalk.exec(eventMessageText)) {
-        const regex = new RegExp(commandObj.learnTrashTalk);
-        const outputArr = regex.exec(eventMessageText);
 
         const data = {
             group_id: groupId,
