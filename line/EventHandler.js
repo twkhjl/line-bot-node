@@ -11,8 +11,7 @@ const ApiHandler = require("./ApiHandler");
 
 const weatherDataHandler = require("../API/weather/DataHandler");
 
-const gameGuessNumber = require("../games/guessNumber");
-const numHelper = require("../helpers/numHelper");
+const guessNumberEventHandler = require("./eventHandler/GuessNumberEventHandler");
 
 // event handler
 const EventHandler = async function (client, event) {
@@ -23,180 +22,11 @@ const EventHandler = async function (client, event) {
     const userId = event.source && event.source.userId ? event.source.userId : "";
     const groupId = event.source && event.source.groupId ? event.source.groupId : "";
 
-    if (eventMessageText == "mic終極密碼開始"
-        && !gameGuessNumber.isCurrentlyPlaying(groupId)
-    ) {
-        gameGuessNumber.groupData.push({
-            groupId: groupId,
-            phase: "decideMaxNum",
-        })
-        const outputMsg = "好喔,請輸入最大數字:";
-        return linReplyHandler.replyWithText(client, event, outputMsg);
 
+    // 終極密碼
+    guessNumberEventHandler(client,event);
+    
 
-    }
-    if (gameGuessNumber.isPhaseDecideMaxNum(groupId, eventMessageText)
-        && numHelper.isPositiveInteger(eventMessageText)
-        && !gameGuessNumber.isValidMaxNum(eventMessageText)) {
-
-        const outputMsg = "數字太大惹,請不要超過500";
-        return linReplyHandler.replyWithText(client, event, outputMsg);
-    }
-
-    if (gameGuessNumber.isPhaseDecideMaxNum(groupId, eventMessageText)
-        && gameGuessNumber.isValidMaxNum(eventMessageText)) {
-
-        const index = gameGuessNumber.findIndexByGroupId(groupId);
-        const randomNumber = numHelper.generateRndomNumber(eventMessageText);
-        gameGuessNumber.groupData[index].correctNumber = randomNumber;
-        if (!randomNumber) gameGuessNumber.groupData[index].correctNumber = 1;
-
-        gameGuessNumber.groupData[index].maxNumber = eventMessageText * 1;
-        gameGuessNumber.groupData[index].minNumber = 1;
-        gameGuessNumber.groupData[index].phase = "guessing";
-        console.log(gameGuessNumber.groupData[index]);
-        const minNumber = gameGuessNumber.groupData[index].minNumber;
-
-        const outputMsg = `遊戲開始,數字為${minNumber}~${eventMessageText}`;
-        return linReplyHandler.replyWithText(client, event, outputMsg);
-
-    }
-
-    if (gameGuessNumber.isPhaseGuessing(groupId, eventMessageText)
-        && numHelper.isPositiveInteger(eventMessageText)
-        && !gameGuessNumber.isInputNumberCorrect(groupId, eventMessageText)) {
-
-        const guessNumber = eventMessageText * 1;
-
-        const index = gameGuessNumber.findIndexByGroupId(groupId);
-        const correctNumber = gameGuessNumber.groupData[index].correctNumber;
-
-
-        let outputMsg = '';
-
-
-        if (gameGuessNumber.groupData[index].minNumber > guessNumber
-            || guessNumber > gameGuessNumber.groupData[index].maxNumber) {
-
-            outputMsg = `請猜${gameGuessNumber.groupData[index].minNumber}~${gameGuessNumber.groupData[index].maxNumber}之間的數字 ^_^|||`;
-            return linReplyHandler.replyWithText(client, event, outputMsg);
-
-        }
-
-        if (gameGuessNumber.groupData[index].minNumber < guessNumber
-            && guessNumber < correctNumber
-        ) {
-
-            gameGuessNumber.groupData[index].minNumber = guessNumber + 1;
-            console.log(gameGuessNumber.groupData[index]);
-
-            const minNumber = gameGuessNumber.groupData[index].minNumber;
-            const maxNumber = gameGuessNumber.groupData[index].maxNumber;
-            if (minNumber == maxNumber && maxNumber == correctNumber) {
-                gameGuessNumber.groupData.splice(index, 1);
-
-                outputMsg = `沒猜中~正確數字為${correctNumber}~遊戲結束,下次再接再勵~`;
-                return linReplyHandler.replyWithText(client, event, outputMsg);
-            }
-
-            outputMsg = `差一點,數字為${gameGuessNumber.groupData[index].minNumber}~${gameGuessNumber.groupData[index].maxNumber}`;
-            return linReplyHandler.replyWithText(client, event, outputMsg);
-
-        }
-        if (correctNumber < guessNumber
-            && guessNumber < gameGuessNumber.groupData[index].maxNumber
-        ) {
-
-            gameGuessNumber.groupData[index].maxNumber = guessNumber - 1;
-            console.log(gameGuessNumber.groupData[index]);
-
-            const minNumber = gameGuessNumber.groupData[index].minNumber;
-            const maxNumber = gameGuessNumber.groupData[index].maxNumber;
-            if (minNumber == maxNumber && maxNumber == correctNumber) {
-                gameGuessNumber.groupData.splice(index, 1);
-
-                outputMsg = `沒猜中~正確數字為${correctNumber}~遊戲結束,下次再接再勵~`;
-                return linReplyHandler.replyWithText(client, event, outputMsg);
-            }
-
-
-            outputMsg = `差一點,數字為${gameGuessNumber.groupData[index].minNumber}~${gameGuessNumber.groupData[index].maxNumber}`;
-            return linReplyHandler.replyWithText(client, event, outputMsg);
-
-        }
-        if (gameGuessNumber.groupData[index].minNumber == guessNumber) {
-
-
-            gameGuessNumber.groupData[index].minNumber = guessNumber + 1;
-            console.log(gameGuessNumber.groupData[index]);
-
-            const minNumber = gameGuessNumber.groupData[index].minNumber;
-            const maxNumber = gameGuessNumber.groupData[index].maxNumber;
-            if (minNumber == maxNumber && maxNumber == correctNumber) {
-                gameGuessNumber.groupData.splice(index, 1);
-
-                outputMsg = `沒猜中~正確數字為${correctNumber}~遊戲結束,下次再接再勵~`;
-                return linReplyHandler.replyWithText(client, event, outputMsg);
-            }
-
-            outputMsg = `差一點,數字為${gameGuessNumber.groupData[index].minNumber}~${gameGuessNumber.groupData[index].maxNumber}`;
-            return linReplyHandler.replyWithText(client, event, outputMsg);
-
-        }
-        if (gameGuessNumber.groupData[index].maxNumber == guessNumber) {
-
-
-            gameGuessNumber.groupData[index].maxNumber = guessNumber - 1;
-            console.log(gameGuessNumber.groupData[index]);
-
-            const minNumber = gameGuessNumber.groupData[index].minNumber;
-            const maxNumber = gameGuessNumber.groupData[index].maxNumber;
-            if (minNumber == maxNumber && maxNumber == correctNumber) {
-                gameGuessNumber.groupData.splice(index, 1);
-
-                outputMsg = `沒猜中~正確數字為${correctNumber}~遊戲結束,下次再接再勵~`;
-                return linReplyHandler.replyWithText(client, event, outputMsg);
-            }
-
-            outputMsg = `差一點,數字為${gameGuessNumber.groupData[index].minNumber}~${gameGuessNumber.groupData[index].maxNumber}`;
-            return linReplyHandler.replyWithText(client, event, outputMsg);
-
-        }
-
-
-
-    }
-
-
-    if (gameGuessNumber.isPhaseGuessing(groupId, eventMessageText)
-        && gameGuessNumber.isInputNumberCorrect(groupId, eventMessageText)) {
-
-        const index = gameGuessNumber.findIndexByGroupId(groupId);
-        gameGuessNumber.groupData.splice(index, 1);
-        console.log(gameGuessNumber.groupData);
-
-        const outputMsg = `猜中了!!!你好棒!!!!`;
-        return linReplyHandler.replyWithText(client, event, outputMsg);
-
-    }
-    if (eventMessageText == "mic終極密碼結束"
-        && gameGuessNumber.isCurrentlyPlaying(groupId)) {
-        const index = gameGuessNumber.findIndexByGroupId(groupId);
-        gameGuessNumber.groupData.splice(index, 1);
-
-        const outputMsg = `好喔,終極密碼遊戲結束`;
-        return linReplyHandler.replyWithText(client, event, outputMsg);
-
-
-    }
-    if (eventMessageText == "mic終極密碼結束"
-        && !gameGuessNumber.isCurrentlyPlaying(groupId)) {
-
-        const outputMsg = `你冷靜,現在沒有進行中的終極密碼遊戲`;
-        return linReplyHandler.replyWithText(client, event, outputMsg);
-
-
-    }
 
     // linebot僅限群組使用
     if (!groupId) {

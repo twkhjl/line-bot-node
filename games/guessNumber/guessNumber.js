@@ -1,4 +1,10 @@
-const numHelper = require("../helpers/numHelper");
+const numHelper = require("../../helpers/numHelper");
+
+const allowedMaxNum = 500;
+const phases = {
+    decideMaxNum: "decideMaxNum",
+    guessing: "guessing",
+};
 
 const GuessNumber = {
 
@@ -15,7 +21,7 @@ const GuessNumber = {
     },
     isValidMaxNum: (maxNum) => {
         return numHelper.isPositiveInteger(maxNum)
-            && maxNum * 1 <= 500;
+            && maxNum * 1 <= allowedMaxNum;
     },
     isPhaseGuessing: (groupId) => {
         return GuessNumber.findByGroupId(groupId)
