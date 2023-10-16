@@ -5,7 +5,7 @@ const ImgModel = require("../models/ImgModel");
 const dateTimeHelper = require("../helpers/dateTimeHelper");
 
 const lineApiHandler = require("./ApiHandler");
-const linReplyHandler = require("./ReplyHandler");
+const lineReplyHandler = require("./ReplyHandler");
 const readme = require("./readme");
 const ApiHandler = require("./ApiHandler");
 
@@ -83,7 +83,7 @@ const EventHandler = async function (client, event) {
     // 顯示教學
     if (commandObj.readme.exec(eventMessageText)) {
         const outputMsg = readme;
-        return linReplyHandler.replyWithText(client, event, outputMsg);
+        return lineReplyHandler.replyWithText(client, event, outputMsg);
     }
 
     // 隨機梗圖
@@ -98,7 +98,7 @@ const EventHandler = async function (client, event) {
 
         if (!randomImg || !randomImg.original_content_url || !randomImg.preview_image_url) return;
 
-        return linReplyHandler.replyWithImg(client, event, randomImg.original_content_url, randomImg.preview_image_url);
+        return lineReplyHandler.replyWithImg(client, event, randomImg.original_content_url, randomImg.preview_image_url);
 
     }
 
@@ -111,7 +111,7 @@ const EventHandler = async function (client, event) {
         const keyword = outputArr[1];
         const outputMsg = "https://www.youtube.com/results?search_query=" + keyword;
 
-        return linReplyHandler.replyWithText(client, event, outputMsg);
+        return lineReplyHandler.replyWithText(client, event, outputMsg);
     }
 
     // 搜google
@@ -123,7 +123,7 @@ const EventHandler = async function (client, event) {
         const keyword = outputArr[1];
         const outputMsg = "https://www.google.com/search?q=" + keyword;
 
-        return linReplyHandler.replyWithText(client, event, outputMsg);
+        return lineReplyHandler.replyWithText(client, event, outputMsg);
 
     }
 
@@ -137,7 +137,7 @@ const EventHandler = async function (client, event) {
         const goal = outputArr[2];
         const outputMsg = `https://www.google.com.tw/maps/dir/${startLocation}/${goal}`;
 
-        return linReplyHandler.replyWithText(client, event, outputMsg);
+        return lineReplyHandler.replyWithText(client, event, outputMsg);
 
 
     }
@@ -160,7 +160,7 @@ const EventHandler = async function (client, event) {
             return;
         });
         if (getRainfullRateErr) return;
-        return linReplyHandler.replyWithText(client, event, outputMsg);
+        return lineReplyHandler.replyWithText(client, event, outputMsg);
 
     }
 
