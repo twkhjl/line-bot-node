@@ -43,6 +43,12 @@ const DataHandler = {
 
 
         return `明天${districtKeyword}最高降雨機率為${rainfallRate}%`;
+    },
+
+    getRadarImage:async()=>{
+        const apiData = await cwaApi.getRadarData();
+        return apiData;
+
     }
 }
 

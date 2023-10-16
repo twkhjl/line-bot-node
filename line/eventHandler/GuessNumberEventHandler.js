@@ -1,5 +1,6 @@
 
 const lineReplyHandler = require("../ReplyHandler");
+const commandObj = require("../command");
 
 const numHelper = require("../../helpers/numHelper");
 
@@ -27,7 +28,7 @@ const GuessNumberEventHandler = function (client, event) {
     const eventMessageText = event.message && event.message.text ? event.message.text : "";
     const groupId = event.source && event.source.groupId ? event.source.groupId : "";
 
-    if (eventMessageText == "mic終極密碼開始"
+    if (commandObj.game.guessNumber.startGame.regex.exec(event.message.text)
         && !validator.isCurrentlyPlaying(groupId)
     ) {
         gameData.groupData.push({
@@ -133,7 +134,7 @@ const GuessNumberEventHandler = function (client, event) {
         return lineReplyHandler.replyWithText(client, event, outputMsg);
 
     }
-    if (eventMessageText == "mic終極密碼結束"
+    if (commandObj.game.guessNumber.endGame.regex.exec(event.message.text)
         && validator.isCurrentlyPlaying(groupId)) {
         const index = dataHandler.findIndexByGroupId(groupId);
         gameData.groupData.splice(index, 1);
@@ -143,7 +144,7 @@ const GuessNumberEventHandler = function (client, event) {
 
 
     }
-    if (eventMessageText == "mic終極密碼結束"
+    if (commandObj.game.guessNumber.endGame.regex.exec(event.message.text)
         && !validator.isCurrentlyPlaying(groupId)) {
 
         const outputMsg = `你冷靜,現在沒有進行中的終極密碼遊戲`;

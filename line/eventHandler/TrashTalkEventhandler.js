@@ -7,8 +7,8 @@ const TrashTalkEventHandler = async function (client, event) {
 
 
     // 學幹話
-    if (commandObj.learnTrashTalk.exec(event.message.text)) {
-        const regex = new RegExp(commandObj.learnTrashTalk);
+    if (commandObj.learnTrashTalk.regex.exec(event.message.text)) {
+        const regex = new RegExp(commandObj.learnTrashTalk.regex);
         const outputArr = regex.exec(event.message.text);
         const title = outputArr[1];
         const body = outputArr[2];
@@ -51,8 +51,8 @@ const TrashTalkEventHandler = async function (client, event) {
     }
 
     // 講幹話
-    if (commandObj.talkTrash.exec(event.message.text)) {
-        const regex = new RegExp(commandObj.talkTrash);
+    if (commandObj.talkTrash.regex.exec(event.message.text)) {
+        const regex = new RegExp(commandObj.talkTrash.regex);
         const outputArr = regex.exec(event.message.text);
 
         const title = outputArr[1];
@@ -79,8 +79,8 @@ const TrashTalkEventHandler = async function (client, event) {
     }
 
     // 刪除特定幹話
-    if (commandObj.removeOneTrashTalk.exec(event.message.text)) {
-        const regex = new RegExp(commandObj.removeOneTrashTalk);
+    if (commandObj.removeOneTrashTalk.regex.exec(event.message.text)) {
+        const regex = new RegExp(commandObj.removeOneTrashTalk.regex);
         const outputArr = regex.exec(event.message.text);
         const title = outputArr[1];
 
@@ -114,7 +114,7 @@ const TrashTalkEventHandler = async function (client, event) {
     }
 
     // 刪除所有幹話
-    if (commandObj.removeAllTrashTalk.exec(event.message.text)) {
+    if (commandObj.removeAllTrashTalk.regex.exec(event.message.text)) {
 
         const data = {
             group_id: event.source.groupId,

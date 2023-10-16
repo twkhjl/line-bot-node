@@ -4,7 +4,6 @@ const dateTimeHelper = require("../helpers/dateTimeHelper");
 
 const lineApiHandler = require("./ApiHandler");
 const lineReplyHandler = require("./ReplyHandler");
-const readme = require("./readme");
 const ApiHandler = require("./ApiHandler");
 
 const guessNumberEventHandler = require("./eventHandler/GuessNumberEventHandler");
@@ -16,17 +15,18 @@ const ImgEventhandler = require("./eventHandler/ImgEventHandler");
 const commandObj = require("./command");
 
 // event handler
-const EventHandler = async function (client, event) {
+const EventHandler = async function (req, client, event) {
+
+    const requestUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+    const webHookUrl = requestUrl.replace("/callback", "");
+    console.log(webHookUrl);
+
 
     const eventMessageText = event.message && event.message.text ? event.message.text : "";
     const eventMessageType = event.message && event.message.type ? event.message.type : "";
 
     const userId = event.source && event.source.userId ? event.source.userId : "";
     const groupId = event.source && event.source.groupId ? event.source.groupId : "";
-
-
-    // 終極密碼
-    guessNumberEventHandler(client,event);
 
 
     // linebot僅限群組使用
@@ -64,14 +64,24 @@ const EventHandler = async function (client, event) {
         });
     }
 
+    // 顯示教學
+    if (commandObj.readme.regex.exec(event.message.text)) {
+        const outputMsg = `請參考指令教學網址:\n${webHookUrl}/readme`;
+
+        return lineReplyHandler.replyWithText(client, event, outputMsg);
+    }
+
+    // 終極密碼
+    guessNumberEventHandler(client, event);
+
     // 幹話相關
-    trashTalkEventHandler(client,event);
+    trashTalkEventHandler(client, event);
 
     // 天氣預報相關
-    weatherEventHandler(client,event);
+    weatherEventHandler(client, event);
 
     // 梗圖相關
-    ImgEventhandler(client,event);
+    ImgEventhandler(client, event);
 
     // 取得群組id用
     if (eventMessageText == 'groupid' && groupId) {
@@ -85,19 +95,14 @@ const EventHandler = async function (client, event) {
         return console.log(output);
     }
 
-    // 顯示教學
-    if (commandObj.readme.exec(eventMessageText)) {
-        const outputMsg = readme;
-        return lineReplyHandler.replyWithText(client, event, outputMsg);
-    }
 
-   
+
 
     // 搜索youtube
     //https://www.youtube.com/results?search_query=
-    if (commandObj.search.youtube.exec(eventMessageText)) {
+    if (commandObj.search.youtube.regex.exec(eventMessageText)) {
 
-        const regex = new RegExp(commandObj.search.youtube);
+        const regex = new RegExp(commandObj.search.youtube.regex);
         const outputArr = regex.exec(eventMessageText);
         const keyword = outputArr[1];
         const outputMsg = "https://www.youtube.com/results?search_query=" + keyword;
@@ -107,9 +112,9 @@ const EventHandler = async function (client, event) {
 
     // 搜google
     // https://www.google.com/search?q=
-    if (commandObj.search.google.exec(eventMessageText)) {
+    if (commandObj.search.google.regex.exec(eventMessageText)) {
 
-        const regex = new RegExp(commandObj.search.google);
+        const regex = new RegExp(commandObj.search.google.regex);
         const outputArr = regex.exec(eventMessageText);
         const keyword = outputArr[1];
         const outputMsg = "https://www.google.com/search?q=" + keyword;
@@ -120,9 +125,9 @@ const EventHandler = async function (client, event) {
 
     // google導航
     // https://www.google.com.tw/maps/dir/地點1/地點2
-    if (commandObj.search.googleMap.exec(eventMessageText)) {
+    if (commandObj.search.googleMap.regex.exec(eventMessageText)) {
 
-        const regex = new RegExp(commandObj.search.googleMap);
+        const regex = new RegExp(commandObj.search.googleMap.regex);
         const outputArr = regex.exec(eventMessageText);
         const startLocation = outputArr[1];
         const goal = outputArr[2];
@@ -133,7 +138,7 @@ const EventHandler = async function (client, event) {
 
     }
 
-    
+
 
 
 }

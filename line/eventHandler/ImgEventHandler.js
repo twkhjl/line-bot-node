@@ -5,7 +5,7 @@ const lineReplyHandler = require("../ReplyHandler");
 const ImgEventhandler = async function (client, event) {
 
     // 隨機梗圖
-    if (commandObj.showRandomImg.exec(event.message.text)) {
+    if (commandObj.showRandomImg.regex.exec(event.message.text)) {
 
         let getRandomImgErr = 0;
         const randomImg = await ImgModel.getRandomImg().catch(err => {
@@ -21,9 +21,9 @@ const ImgEventhandler = async function (client, event) {
     }
 
     // 指定梗圖
-    if (commandObj.showImgByTitle.exec(event.message.text)) {
+    if (commandObj.showImgByTitle.regex.exec(event.message.text)) {
 
-        const regex = new RegExp(commandObj.showImgByTitle);
+        const regex = new RegExp(commandObj.showImgByTitle.regex);
         const outputArr = regex.exec(event.message.text);
         const title = outputArr[1];
 
