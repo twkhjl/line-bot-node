@@ -1,6 +1,4 @@
-const TrashTalkModel = require("../models/TrashTalkModel");
 const MessageRecordModel = require("../models/MessageRecordModel");
-const ImgModel = require("../models/ImgModel");
 
 const dateTimeHelper = require("../helpers/dateTimeHelper");
 
@@ -9,11 +7,13 @@ const lineReplyHandler = require("./ReplyHandler");
 const readme = require("./readme");
 const ApiHandler = require("./ApiHandler");
 
-const weatherDataHandler = require("../API/weather/DataHandler");
-
 const guessNumberEventHandler = require("./eventHandler/GuessNumberEventHandler");
-
 const trashTalkEventHandler = require("./eventHandler/TrashTalkEventhandler");
+const weatherEventHandler = require("./eventHandler/WeatherEventHandler");
+const ImgEventhandler = require("./eventHandler/ImgEventHandler");
+
+// line bot指令
+const commandObj = require("./command");
 
 // event handler
 const EventHandler = async function (client, event) {
@@ -27,7 +27,6 @@ const EventHandler = async function (client, event) {
 
     // 終極密碼
     guessNumberEventHandler(client,event);
-    
 
 
     // linebot僅限群組使用
@@ -65,8 +64,14 @@ const EventHandler = async function (client, event) {
         });
     }
 
-    // line bot指令
-    const commandObj = require("./command");
+    // 幹話相關
+    trashTalkEventHandler(client,event);
+
+    // 天氣預報相關
+    weatherEventHandler(client,event);
+
+    // 梗圖相關
+    ImgEventhandler(client,event);
 
     // 取得群組id用
     if (eventMessageText == 'groupid' && groupId) {
@@ -86,21 +91,7 @@ const EventHandler = async function (client, event) {
         return lineReplyHandler.replyWithText(client, event, outputMsg);
     }
 
-    // 隨機梗圖
-    if (commandObj.showRandomImg.exec(eventMessageText)) {
-
-        let getRandomImgErr = 0;
-        const randomImg = await ImgModel.getRandomImg().catch(err => {
-            removeAllFromGroupErr = 1;
-            return console.log(err);
-        });
-        if (getRandomImgErr) return;;
-
-        if (!randomImg || !randomImg.original_content_url || !randomImg.preview_image_url) return;
-
-        return lineReplyHandler.replyWithImg(client, event, randomImg.original_content_url, randomImg.preview_image_url);
-
-    }
+   
 
     // 搜索youtube
     //https://www.youtube.com/results?search_query=
@@ -142,27 +133,7 @@ const EventHandler = async function (client, event) {
 
     }
 
-    // 查詢高雄特定行政區明天降雨機率
-    if (commandObj.showRainfullRate.exec(eventMessageText)) {
-        const regex = new RegExp(commandObj.showRainfullRate);
-        const outputArr = regex.exec(eventMessageText);
-        let districtKeyword = outputArr[1];
-
-
-        if (!districtKeyword.includes("區")) {
-            districtKeyword += "區";
-        }
-
-        let getRainfullRateErr = 0;
-        const outputMsg = await weatherDataHandler.getRainfullRate(districtKeyword).catch(err => {
-            console.log(err);
-            getRainfullRateErr = 1;
-            return;
-        });
-        if (getRainfullRateErr) return;
-        return lineReplyHandler.replyWithText(client, event, outputMsg);
-
-    }
+    
 
 
 }

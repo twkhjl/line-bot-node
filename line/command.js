@@ -7,6 +7,7 @@ const command = {
     "removeOneTrashTalk": /^mic給我忘記 (.+)$/,
 
     "showRandomImg": /^mic圖呢$/,
+    "showImgByTitle": /^mic支援 (.+)$/,
 
     "showRainfullRate":/^mic明天(.+)區?會下雨嗎$/,
 

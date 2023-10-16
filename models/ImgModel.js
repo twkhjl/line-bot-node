@@ -37,6 +37,23 @@ const ImgModel = {
         });
     },
 
+    getOneByTitle: (title) => {
+
+        const sql = `select * from ${tableName} where title = ? `;
+        const args = [title];
+
+        return new Promise((resolve, reject) => {
+            db.query(sql, args, (err, rows) => {
+                if (err) {
+                    return reject(err);
+                }
+                if(rows[0]) return resolve(rows[0]);
+                resolve(rows);
+            });
+        });
+
+    },
+
 
 
     getRandomByGroupID: (group_id) => {
