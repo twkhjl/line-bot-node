@@ -86,129 +86,6 @@ const EventHandler = async function (client, event) {
         return linReplyHandler.replyWithText(client, event, outputMsg);
     }
 
-    // 學幹話
-    if (commandObj.learnTrashTalk.exec(eventMessageText)) {
-        const regex = new RegExp(commandObj.learnTrashTalk);
-        const outputArr = regex.exec(eventMessageText);
-        const title = outputArr[1];
-        const body = outputArr[2];
-
-        let checkTitleExistHasErr = 0;
-        const isExist = await TrashTalkModel.checkTitleExist(title, groupId).catch(err => {
-            checkTitleExistHasErr = 1;
-            console.log(err);
-        });
-        if (checkTitleExistHasErr) return;
-
-
-        if (isExist >= 1) {
-            const outputMsg = "這句已經學過惹";
-            return linReplyHandler.replyWithText(client, event, outputMsg);
-        }
-
-        const data = {
-            group_id: groupId,
-            title: title,
-            body: body,
-            created_at: dateTimeHelper.getCurrentTimeString(),
-        };
-
-        let insertHasErr = 0;
-        const queryResult = await TrashTalkModel.insert(data).catch(err => {
-            insertHasErr = 1;
-            console.log(err);
-        });
-        if (insertHasErr) return;
-
-
-        if (queryResult.insertId) {
-            const outputMsg = "好喔,學起來惹";
-            return linReplyHandler.replyWithText(client, event, outputMsg);
-        }
-
-        return;
-
-    }
-
-    // 講幹話
-    if (commandObj.talkTrash.exec(eventMessageText)) {
-        const regex = new RegExp(commandObj.talkTrash);
-        const outputArr = regex.exec(eventMessageText);
-
-        const title = outputArr[1];
-
-        let getOneByTitleAndGroupIDErr = 0;
-        const queryResult = await TrashTalkModel.getOneByTitleAndGroupID(title, groupId).catch(err => {
-            getOneByTitleAndGroupIDErr = 1;
-            return console.log(err);
-        });
-        if (getOneByTitleAndGroupIDErr) return;
-
-        if (!queryResult || queryResult.length <= 0) {
-            const outputMsg = "這句我沒學過0.0";
-            return linReplyHandler.replyWithText(client, event, outputMsg);
-
-        }
-
-        if (queryResult && queryResult[0] && queryResult[0].body) {
-            const outputMsg = queryResult[0].body;
-            return linReplyHandler.replyWithText(client, event, outputMsg);
-        }
-        return;
-
-    }
-
-    // 刪除特定幹話
-    if (commandObj.removeOneTrashTalk.exec(eventMessageText)) {
-        const regex = new RegExp(commandObj.removeOneTrashTalk);
-        const outputArr = regex.exec(eventMessageText);
-        const title = outputArr[1];
-
-        let checkTitleExistHasErr = 0;
-        const isExist = await TrashTalkModel.checkTitleExist(title, groupId).catch(err => {
-            checkTitleExistHasErr = 1;
-            console.log(err);
-        });
-        if (checkTitleExistHasErr) return;
-
-        if (isExist <= 0) {
-            const outputMsg = "這句我沒學過,不用刪辣";
-            return linReplyHandler.replyWithText(client, event, outputMsg);
-        }
-
-        const data = {
-            group_id: groupId,
-            title: title,
-        };
-
-        let removeOneFromGroupErr = 0;
-        await TrashTalkModel.removeOneFromGroup(data).catch(err => {
-            removeOneFromGroupErr = 1;
-            return console.log(err);
-        });
-        if (removeOneFromGroupErr) return;
-
-        const outputMsg = `好喔,我把"${title}"忘掉惹`;
-        return linReplyHandler.replyWithText(client, event, outputMsg);
-
-    }
-
-    // 刪除所有幹話
-    if (commandObj.removeAllTrashTalk.exec(eventMessageText)) {
-
-        const data = {
-            group_id: groupId,
-        };
-
-        let removeAllFromGroupErr = 0;
-        TrashTalkModel.removeAllFromGroup(data).catch(err => {
-            removeAllFromGroupErr = 1;
-            return console.log(err);
-        });
-        if (removeAllFromGroupErr) return;
-
-    
-
     // 隨機梗圖
     if (commandObj.showRandomImg.exec(eventMessageText)) {
 
@@ -235,8 +112,6 @@ const EventHandler = async function (client, event) {
         const outputMsg = "https://www.youtube.com/results?search_query=" + keyword;
 
         return linReplyHandler.replyWithText(client, event, outputMsg);
-
-
     }
 
     // 搜google
@@ -292,4 +167,4 @@ const EventHandler = async function (client, event) {
 
 }
 
-module.exports = EventHandler
+module.exports = EventHandler;
