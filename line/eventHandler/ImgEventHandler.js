@@ -39,6 +39,30 @@ const ImgEventhandler = async function (client, event) {
         return lineReplyHandler.replyWithImg(client, event, result.original_content_url, result.preview_image_url);
 
     }
+
+    // 列出所有梗圖標題
+    if (commandObj.showAllImgTitle.regex.exec(event.message.text)) {
+
+
+        let getAllImgTitleErr = 0;
+        const result = await ImgModel.getAllImgTitle().catch(err => {
+            getAllImgTitleErr = 1;
+            return console.log(err);
+        });
+        if (getAllImgTitleErr) return;
+        if (!result) return;
+
+        let output = "目前支援的圖片關鍵字如下:\n(關鍵字使用方式:輸入 'mic支援 關鍵字')\n";
+        [].map.call(result,function(e){
+            output+=e.title;
+            output+="\n";
+        })
+
+        if (!output) return;
+
+        return lineReplyHandler.replyWithText(client, event, output);
+
+    }
 }
 
 module.exports = ImgEventhandler;

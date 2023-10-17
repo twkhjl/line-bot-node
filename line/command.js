@@ -44,7 +44,12 @@ const command = {
         description: "根據圖片關鍵字秀出梗圖",
 
     },
+    showAllImgTitle: {
+        regex: /^mic支援那些圖$/,
+        name: "mic支援那些圖",
+        description: "讓mic秀出有標題的梗圖列表",
 
+    },
     showRainfullRate: {
         regex: /^mic明天(.+)區?會下雨嗎$/,
         name: "mic明天{某某區}會下雨嗎",
@@ -66,8 +71,8 @@ const command = {
         },
         google: {
             regex: /^mic搜 (.+)$/,
-            name: "mic搜 {關鍵字}",
-            description: "讓mic搜尋google",
+            name: "(此功能暫不開放)mic搜 {圖片關鍵字}",
+            description: "(此功能暫不開放)搜尋google圖片",
 
         },
         googleMap: {

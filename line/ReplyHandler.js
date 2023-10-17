@@ -13,6 +13,19 @@ const ReplyHandler = {
         };
         return client.replyMessage(event.replyToken, echo);
     },
+    replyWithFlex: (client, event, flexMessage) => {
+
+        if (!client) return false;
+        if (!event) return false;
+        if (!flexMessage) return false;
+
+        const echo = {
+            type: 'flex',
+            altText: 'This is a Flex Message',
+            contents: flexMessage,
+        };
+        return client.replyMessage(event.replyToken, echo);
+    },
 
     replyWithImg: (client, event, originalContentUrl, previewImageUrl = null) => {
 

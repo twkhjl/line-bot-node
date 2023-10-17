@@ -54,6 +54,23 @@ const ImgModel = {
 
     },
 
+    getAllImgTitle: async () => {
+
+        const sql = `SELECT * FROM ${tableName}
+        WHERE title <> "" AND title is not null`;
+        const args = [];
+
+        return new Promise((resolve, reject) => {
+            db.query(sql, args, (err, rows) => {
+                if (err) {
+                    return reject(err);
+                }
+                
+                return resolve(rows);
+            });
+        });
+    },
+
 
 
     getRandomByGroupID: (group_id) => {

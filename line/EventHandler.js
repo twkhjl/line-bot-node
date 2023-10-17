@@ -19,8 +19,6 @@ const EventHandler = async function (req, client, event) {
 
     const requestUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     const webHookUrl = requestUrl.replace("/callback", "");
-    console.log(webHookUrl);
-
 
     const eventMessageText = event.message && event.message.text ? event.message.text : "";
     const eventMessageType = event.message && event.message.type ? event.message.type : "";
@@ -30,9 +28,8 @@ const EventHandler = async function (req, client, event) {
 
 
     // linebot僅限群組使用
-    if (!groupId) {
-        return;
-    }
+    if (!groupId) return;
+
     // 紀錄群組對話
     if (event.type == 'message' && eventMessageType == 'text' && groupId) {
 
@@ -96,8 +93,6 @@ const EventHandler = async function (req, client, event) {
     }
 
 
-
-
     // 搜索youtube
     //https://www.youtube.com/results?search_query=
     if (commandObj.search.youtube.regex.exec(eventMessageText)) {
@@ -110,17 +105,23 @@ const EventHandler = async function (req, client, event) {
         return lineReplyHandler.replyWithText(client, event, outputMsg);
     }
 
-    // 搜google
-    // https://www.google.com/search?q=
+    // 搜google圖片(暫不開放)
     if (commandObj.search.google.regex.exec(eventMessageText)) {
+        
+        // 此功能暫不開放
+        return;
 
         const regex = new RegExp(commandObj.search.google.regex);
         const outputArr = regex.exec(eventMessageText);
         const keyword = outputArr[1];
-        const outputMsg = "https://www.google.com/search?q=" + keyword;
 
-        return lineReplyHandler.replyWithText(client, event, outputMsg);
+        const googleSearchImage = require("../API/google/search/GoogleSearchImage");
+        const data = await googleSearchImage(keyword);
+        const items = data.items;
+        const imgLink = items[0].link;
 
+        return lineReplyHandler.replyWithImg(client, event, imgLink, imgLink);
+        
     }
 
     // google導航
@@ -137,8 +138,6 @@ const EventHandler = async function (req, client, event) {
 
 
     }
-
-
 
 
 }
