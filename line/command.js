@@ -98,6 +98,33 @@ const command = {
 
             }
         }
+    },
+    img:{
+        theCatApi:{
+            showRandomImg: {
+                regex: /^mic貓呢$/,
+                name: "mic貓呢",
+                description: "抽隨機喵咪圖",
+    
+            }
+        },
+        dogCeoApi:{
+            showRandomImg: {
+                regex: /^mic狗呢$/,
+                name: "mic狗呢",
+                description: "抽隨機狗狗圖",
+    
+            }
+        },
+        shibeOnlineApi:{
+            showRandomImg: {
+                regex: /^mic柴柴呢$/,
+                name: "mic柴柴呢",
+                description: "抽隨機柴柴圖",
+    
+            }
+        },
+        
     }
 };
 

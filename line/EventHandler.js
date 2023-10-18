@@ -6,13 +6,16 @@ const lineApiHandler = require("./ApiHandler");
 const lineReplyHandler = require("./ReplyHandler");
 const ApiHandler = require("./ApiHandler");
 
+// line bot指令
+const commandObj = require("./command");
+
 const guessNumberEventHandler = require("./eventHandler/GuessNumberEventHandler");
 const trashTalkEventHandler = require("./eventHandler/TrashTalkEventhandler");
 const weatherEventHandler = require("./eventHandler/WeatherEventHandler");
 const ImgEventhandler = require("./eventHandler/ImgEventHandler");
-
-// line bot指令
-const commandObj = require("./command");
+const TheCatApiEventHandler = require("./eventHandler/TheCatApiEventHandler");
+const DogCeoApiEventHandler = require("./eventHandler/DogCeoApiEventHandler");
+const ShibeOnlineApiEventHandler = require("./eventHandler/ShibeOnlineApiEventHandler");
 
 // event handler
 const EventHandler = async function (req, client, event) {
@@ -79,6 +82,15 @@ const EventHandler = async function (req, client, event) {
 
     // 梗圖相關
     ImgEventhandler(client, event);
+
+    // 貓圖
+    TheCatApiEventHandler(client, event);
+
+    // 狗圖
+    DogCeoApiEventHandler(client,event);
+
+    // 柴柴圖
+    ShibeOnlineApiEventHandler(client,event);
 
     // 取得群組id用
     if (eventMessageText == 'groupid' && groupId) {
