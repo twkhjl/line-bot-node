@@ -34,36 +34,6 @@ const EventHandler = async function (req, client, event) {
     // linebot僅限群組使用
     if (!groupId) return;
 
-    // 紀錄群組對話
-    if (event.type == 'message' && eventMessageType == 'text' && groupId) {
-
-        const data = {
-            group_id: groupId,
-            user_id: userId,
-            message_type: eventMessageType,
-            message: eventMessageText,
-            created_at: dateTimeHelper.getCurrentTimeString(),
-
-        };
-
-        let userProfileErr = 0;
-        let userProfile = null;
-        if (userId) {
-            userProfile = await ApiHandler.userProfile(userId).catch(err => {
-                userProfileErr = 1;
-                console.log(err);
-                return;
-            })
-        }
-
-        if (userProfile && userProfile.displayName) {
-            data.display_name = userProfile.displayName;
-        }
-
-        await MessageRecordModel.insert(data).catch(err => {
-            return console.log(err);
-        });
-    }
 
     // 顯示教學
     if (commandObj.readme.regex.exec(event.message.text)) {
