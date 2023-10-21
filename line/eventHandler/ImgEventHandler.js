@@ -52,7 +52,7 @@ const ImgEventhandler = async function (client, event) {
         if (getAllImgTitleErr) return;
         if (!result) return;
 
-        let output = "目前支援的圖片關鍵字如下:\n(關鍵字使用方式:輸入 'mic支援 關鍵字')\n";
+        let output = "目前支援的圖片關鍵字如下：\n(關鍵字使用方式:輸入 'mic支援 關鍵字')\n";
         [].map.call(result,function(e){
             output+=e.title;
             output+="\n";

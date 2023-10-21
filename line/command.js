@@ -99,33 +99,46 @@ const command = {
             }
         }
     },
-    img:{
-        theCatApi:{
+    img: {
+        theCatApi: {
             showRandomImg: {
                 regex: /^mic貓呢$/,
                 name: "mic貓呢",
                 description: "抽隨機喵咪圖",
-    
+
             }
         },
-        dogCeoApi:{
+        dogCeoApi: {
             showRandomImg: {
                 regex: /^mic狗呢$/,
                 name: "mic狗呢",
                 description: "抽隨機狗狗圖",
-    
+
             }
         },
-        shibeOnlineApi:{
+        shibeOnlineApi: {
             showRandomImg: {
                 regex: /^mic柴柴呢$/,
                 name: "mic柴柴呢",
                 description: "抽隨機柴柴圖",
-    
+
             }
         },
-        
-    }
+
+    },
+    translate: {
+        toTraditionalChinese:{
+            regex: /^mic翻譯 (.+)$/,
+            name: "mic翻譯 {文字內容}",
+            description: "將文字內容翻譯成中文",
+        },
+        toAnotherLanguage:{
+            regex: /^mic翻成(.+)文 (.+)$/,
+            name: "mic翻成{中文/英文/日文/韓文} {文字內容}",
+            description: "將文字內容翻譯成指定語言. ex: mic翻成日文 test",
+        }
+
+    },
 };
 
 

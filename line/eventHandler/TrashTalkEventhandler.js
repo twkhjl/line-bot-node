@@ -42,7 +42,7 @@ const TrashTalkEventHandler = async function (client, event) {
 
 
         if (queryResult.insertId) {
-            const outputMsg = "好喔,學起來惹";
+            const outputMsg = "好喔，學起來惹";
             return lineReplyHandler.replyWithText(client, event, outputMsg);
         }
 
@@ -92,7 +92,7 @@ const TrashTalkEventHandler = async function (client, event) {
         if (checkTitleExistHasErr) return;
 
         if (isExist <= 0) {
-            const outputMsg = "這句我沒學過,不用刪辣";
+            const outputMsg = "這句我沒學過，不用刪辣";
             return lineReplyHandler.replyWithText(client, event, outputMsg);
         }
 
@@ -108,7 +108,7 @@ const TrashTalkEventHandler = async function (client, event) {
         });
         if (removeOneFromGroupErr) return;
 
-        const outputMsg = `好喔,我把"${title}"忘掉惹`;
+        const outputMsg = `好喔，我把"${title}"忘掉惹`;
         return lineReplyHandler.replyWithText(client, event, outputMsg);
 
     }
@@ -127,7 +127,7 @@ const TrashTalkEventHandler = async function (client, event) {
         });
         if (removeAllFromGroupErr) return;
 
-        const outputMsg = "好喔,我全部忘光光惹>_<";
+        const outputMsg = "好喔，我全部忘光光惹>_<";
         return lineReplyHandler.replyWithText(client, event, outputMsg);
 
     }

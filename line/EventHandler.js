@@ -16,6 +16,7 @@ const ImgEventhandler = require("./eventHandler/ImgEventHandler");
 const TheCatApiEventHandler = require("./eventHandler/TheCatApiEventHandler");
 const DogCeoApiEventHandler = require("./eventHandler/DogCeoApiEventHandler");
 const ShibeOnlineApiEventHandler = require("./eventHandler/ShibeOnlineApiEventHandler");
+const GoogleTranslateEventHandler = require("./eventHandler/GoogleTranslateEventHandler");
 
 // event handler
 const EventHandler = async function (req, client, event) {
@@ -71,6 +72,9 @@ const EventHandler = async function (req, client, event) {
         return lineReplyHandler.replyWithText(client, event, outputMsg);
     }
 
+    // google翻譯
+    GoogleTranslateEventHandler(client,event);
+
     // 終極密碼
     guessNumberEventHandler(client, event);
 
@@ -87,10 +91,10 @@ const EventHandler = async function (req, client, event) {
     TheCatApiEventHandler(client, event);
 
     // 狗圖
-    DogCeoApiEventHandler(client,event);
+    DogCeoApiEventHandler(client, event);
 
     // 柴柴圖
-    ShibeOnlineApiEventHandler(client,event);
+    ShibeOnlineApiEventHandler(client, event);
 
     // 取得群組id用
     if (eventMessageText == 'groupid' && groupId) {
@@ -119,7 +123,7 @@ const EventHandler = async function (req, client, event) {
 
     // 搜google圖片(暫不開放)
     if (commandObj.search.google.regex.exec(eventMessageText)) {
-        
+
         // 此功能暫不開放
         return;
 
@@ -133,7 +137,7 @@ const EventHandler = async function (req, client, event) {
         const imgLink = items[0].link;
 
         return lineReplyHandler.replyWithImg(client, event, imgLink, imgLink);
-        
+
     }
 
     // google導航

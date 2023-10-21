@@ -35,7 +35,7 @@ const GuessNumberEventHandler = function (client, event) {
             groupId: groupId,
             phase: gameConfig.phases.decideMaxNum,
         })
-        const outputMsg = "好喔,請輸入最大數字:";
+        const outputMsg = "好喔，請輸入最大數字:";
         return lineReplyHandler.replyWithText(client, event, outputMsg);
 
 
@@ -45,7 +45,7 @@ const GuessNumberEventHandler = function (client, event) {
         && numHelper.isPositiveInteger(eventMessageText)
         && !validator.isValidMaxNum(eventMessageText)) {
 
-        const outputMsg = "數字太大惹,請不要超過500";
+        const outputMsg = "數字太大惹，請不要超過500";
         return lineReplyHandler.replyWithText(client, event, outputMsg);
     }
 
@@ -57,7 +57,7 @@ const GuessNumberEventHandler = function (client, event) {
         dataHandler.configureBeforeGameStart(groupId, minNumber, maxNumber);
 
         console.log(gameData.groupData);
-        const outputMsg = `遊戲開始,數字為${minNumber}~${maxNumber}`;
+        const outputMsg = `遊戲開始，數字為${minNumber}~${maxNumber}`;
         return lineReplyHandler.replyWithText(client, event, outputMsg);
 
     }
@@ -91,7 +91,7 @@ const GuessNumberEventHandler = function (client, event) {
             const isUserLose = handleUserLose(client, event, index);
             if (isUserLose) return;
 
-            outputMsg = `差一點,數字為${gameData.groupData[index].minNumber}~${gameData.groupData[index].maxNumber}`;
+            outputMsg = `差一點，數字為${gameData.groupData[index].minNumber}~${gameData.groupData[index].maxNumber}`;
             return lineReplyHandler.replyWithText(client, event, outputMsg);
 
         }
@@ -104,7 +104,7 @@ const GuessNumberEventHandler = function (client, event) {
             const isUserLose = handleUserLose(client, event, index);
             if (isUserLose) return;
 
-            outputMsg = `差一點,數字為${gameData.groupData[index].minNumber}~${gameData.groupData[index].maxNumber}`;
+            outputMsg = `差一點，數字為${gameData.groupData[index].minNumber}~${gameData.groupData[index].maxNumber}`;
             return lineReplyHandler.replyWithText(client, event, outputMsg);
 
         }
@@ -118,7 +118,7 @@ const GuessNumberEventHandler = function (client, event) {
         const isUserLose = handleUserLose(client, event, index);
         if (isUserLose) return;
 
-        outputMsg = `差一點,數字為${gameData.groupData[index].minNumber}~${gameData.groupData[index].maxNumber}`;
+        outputMsg = `差一點，數字為${gameData.groupData[index].minNumber}~${gameData.groupData[index].maxNumber}`;
         return lineReplyHandler.replyWithText(client, event, outputMsg);
 
 
@@ -139,7 +139,7 @@ const GuessNumberEventHandler = function (client, event) {
         const index = dataHandler.findIndexByGroupId(groupId);
         gameData.groupData.splice(index, 1);
 
-        const outputMsg = `好喔,終極密碼遊戲結束`;
+        const outputMsg = `好喔，終極密碼遊戲結束`;
         return lineReplyHandler.replyWithText(client, event, outputMsg);
 
 
@@ -147,7 +147,7 @@ const GuessNumberEventHandler = function (client, event) {
     if (commandObj.game.guessNumber.endGame.regex.exec(event.message.text)
         && !validator.isCurrentlyPlaying(groupId)) {
 
-        const outputMsg = `你冷靜,現在沒有進行中的終極密碼遊戲`;
+        const outputMsg = `你冷靜，現在沒有進行中的終極密碼遊戲`;
         return lineReplyHandler.replyWithText(client, event, outputMsg);
 
 
