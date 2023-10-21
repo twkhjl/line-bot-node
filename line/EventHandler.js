@@ -17,6 +17,8 @@ const TheCatApiEventHandler = require("./eventHandler/TheCatApiEventHandler");
 const DogCeoApiEventHandler = require("./eventHandler/DogCeoApiEventHandler");
 const ShibeOnlineApiEventHandler = require("./eventHandler/ShibeOnlineApiEventHandler");
 const GoogleTranslateEventHandler = require("./eventHandler/GoogleTranslateEventHandler");
+const ReplyHandler = require("./ReplyHandler");
+const PttBeautyEventHandler = require("./eventHandler/ptt/PttBeautyEventHandler");
 
 // event handler
 const EventHandler = async function (req, client, event) {
@@ -39,8 +41,17 @@ const EventHandler = async function (req, client, event) {
         return lineReplyHandler.replyWithText(client, event, outputMsg);
     }
 
+    // test
+
+    if (eventMessageText == 'test') {
+        const imgs = await BeautyDataHandler.getRandomImg();
+
+        return ReplyHandler.replyWithImg(client,event,imgs[0],imgs[0]);
+        return console.log(imgs);
+    }
+
     // google翻譯
-    GoogleTranslateEventHandler(client,event);
+    GoogleTranslateEventHandler(client, event);
 
     // 終極密碼
     guessNumberEventHandler(client, event);
@@ -62,6 +73,9 @@ const EventHandler = async function (req, client, event) {
 
     // 柴柴圖
     ShibeOnlineApiEventHandler(client, event);
+
+    // ptt表特版
+    PttBeautyEventHandler(client,event);
 
     // 取得群組id用
     if (eventMessageText == 'groupid' && groupId) {

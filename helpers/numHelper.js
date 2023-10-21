@@ -10,6 +10,9 @@ const numHelper = {
     generateRndomNumber: (maxNum) => {
         return Math.floor(Math.random() * (maxNum));
     },
+    randomIntegerFromInterval: (min, max) => {
+        return Math.floor(Math.random() * (max - min + 1) + min)
+    }
 }
 
 

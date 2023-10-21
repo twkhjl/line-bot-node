@@ -127,18 +127,27 @@ const command = {
 
     },
     translate: {
-        toTraditionalChinese:{
+        toTraditionalChinese: {
             regex: /^mic翻譯 (.+)$/,
             name: "mic翻譯 {文字內容}",
             description: "將文字內容翻譯成中文",
         },
-        toAnotherLanguage:{
+        toAnotherLanguage: {
             regex: /^mic翻成(.+)文 (.+)$/,
             name: "mic翻成{中文/英文/日文/韓文} {文字內容}",
             description: "將文字內容翻譯成指定語言. ex: mic翻成日文 test",
         }
 
     },
+    ptt: {
+        beauty: {
+            showRandomFemaleImg: {
+                regex: /^mic妹子呢$/,
+                name: "mic妹子呢",
+                description: "從ptt表特版隨機抽正妹圖",
+            }
+        }
+    }
 };
 
 
