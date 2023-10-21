@@ -31,9 +31,6 @@ const EventHandler = async function (req, client, event) {
     const groupId = event.source && event.source.groupId ? event.source.groupId : "";
 
 
-    // linebot僅限群組使用
-    if (!groupId) return;
-
 
     // 顯示教學
     if (commandObj.readme.regex.exec(event.message.text)) {
