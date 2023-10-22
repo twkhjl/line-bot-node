@@ -147,6 +147,17 @@ const command = {
                 description: "從ptt表特版隨機抽正妹圖",
             }
         }
+    },
+    chatbot: {
+        chatGPT3point5: {
+            chat: {
+                regex: /^@mic(.+)$/,
+                name: "@mic(對話內容)",
+                description: "跟mic聊天",
+
+            }
+
+        }
     }
 };
 
