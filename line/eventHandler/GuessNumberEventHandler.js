@@ -14,7 +14,7 @@ const handleUserLose = (client, event, index) => {
     if (validator.isUserLose(gameData.groupData[index])) {
 
         const correctNumber = gameData.groupData[index].correctNumber;
-        outputMsg = `沒猜中~正確數字為${correctNumber}~遊戲結束,下次再接再勵~`;
+        outputMsg = `沒猜中~正確數字為${correctNumber}~遊戲結束，下次再接再勵~`;
         gameData.groupData.splice(index, 1);
         lineReplyHandler.replyWithText(client, event, outputMsg);
         return true;
@@ -35,7 +35,7 @@ const GuessNumberEventHandler = function (client, event) {
             groupId: groupId,
             phase: gameConfig.phases.decideMaxNum,
         })
-        const outputMsg = "好喔，請輸入最大數字:";
+        const outputMsg = "好喔，請輸入最大數字：";
         return lineReplyHandler.replyWithText(client, event, outputMsg);
 
 
@@ -130,7 +130,7 @@ const GuessNumberEventHandler = function (client, event) {
         const index = dataHandler.findIndexByGroupId(groupId);
         gameData.groupData.splice(index, 1);
 
-        const outputMsg = `猜中了!!!你好棒!!!!`;
+        const outputMsg = `猜中了！！！你好棒！！！`;
         return lineReplyHandler.replyWithText(client, event, outputMsg);
 
     }
