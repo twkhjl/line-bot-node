@@ -20,9 +20,10 @@ const ChatGPT3point5DataHandler = {
         const response = await fetch(url);
 
         const data = await response.text();
-
-        const regex = new RegExp(/<message>(.+)<\/message>/);
+        
+        const regex = new RegExp(/<message>\n*(.+)<\/message>/gm);
         const outputArr = regex.exec(data);
+
         const responseMsg = outputArr[1];
         return responseMsg;
     }
