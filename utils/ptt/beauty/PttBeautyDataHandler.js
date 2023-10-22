@@ -164,6 +164,12 @@ const PttBeautyDataHandler = {
         const imgsRandomIdx = numHelper.generateRndomNumber(imgs.length - 1);
         const output = imgs[imgsRandomIdx];
 
+        const isImgUrlValid = await fetch(output);
+
+        if (!isImgUrlValid.ok) {
+            return new Promise((resolve, reject) => resolve({ hasErr: true, err: "img url invalid" }));
+        }
+
         return new Promise((resolve, reject) => resolve(output));
 
     }
