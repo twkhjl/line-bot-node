@@ -1,63 +1,39 @@
 const command = {
     readme: {
-        regex: /^mic怎麼用$/,
+        regex: /^mic怎麼用$/i,
         name: "mic怎麼用",
         description: "顯示mic的使用教學網址",
 
     },
 
-    learnTrashTalk: {
-        regex: /^mic學幹話 (\S+) (.+)$/,
-        name: "mic學幹話 {關鍵字} {幹話內容}",
-        description: "教mic學幹話",
-
-    },
-    talkTrash: {
-        regex: /^mic (.+)$/,
-        name: "mic {關鍵字}",
-        description: "讓mic說幹話",
-
-    },
-    removeAllTrashTalk: {
-        regex: /^mic幹話忘光光$/,
-        name: "mic幹話忘光光",
-        description: "讓mic把以前學過的幹話全部忘記",
-
-    },
-    removeOneTrashTalk: {
-        regex: /^mic給我忘記 (.+)$/,
-        name: "mic給我忘記 {幹話關鍵字}",
-        description: "讓mic忘記特定的幹話",
-
-    },
 
     showRandomImg: {
-        regex: /^mic圖呢$/,
+        regex: /^mic圖呢$/i,
         name: "mic圖呢",
         description: "讓mic秀出隨機梗圖",
 
     },
 
     showImgByTitle: {
-        regex: /^mic支援 (.+)$/,
+        regex: /^mic支援 (.+)$/i,
         name: "mic支援 {圖片關鍵字}",
         description: "根據圖片關鍵字秀出梗圖",
 
     },
     showAllImgTitle: {
-        regex: /^mic支援那些圖$/,
+        regex: /^mic支援那些圖$/i,
         name: "mic支援那些圖",
         description: "讓mic秀出有標題的梗圖列表",
 
     },
     showRainfullRate: {
-        regex: /^mic明天(.+)區?會下雨嗎$/,
+        regex: /^mic明天(.+)區?會下雨嗎$/i,
         name: "mic明天{某某區}會下雨嗎",
         description: "查詢明天高雄特定行政區的降雨機率,'區'字可不打",
 
     },
     showRadarImg: {
-        regex: /^mic雷達回波圖$/,
+        regex: /^mic雷達回波圖$/i,
         name: "mic雷達回波圖",
         description: "顯示高雄的雷達回波圖",
 
@@ -65,18 +41,13 @@ const command = {
 
     search: {
         youtube: {
-            regex: /^mic搜yt (.+)$/,
+            regex: /^mic搜yt (.+)$/i,
             name: "mic搜yt {關鍵字}",
             description: "讓mic搜尋youtube",
         },
-        google: {
-            regex: /^mic搜 (.+)$/,
-            name: "(此功能暫不開放)mic搜 {圖片關鍵字}",
-            description: "(此功能暫不開放)搜尋google圖片",
 
-        },
         googleMap: {
-            regex: /^mic導航 (.+)到(.+)$/,
+            regex: /^mic導航 (.+)到(.+)$/i,
             name: "mic導航 {出發地}到{目的地}",
             description: "讓mic用google導航",
 
@@ -99,6 +70,7 @@ const command = {
             }
         }
     },
+    
     img: {
         theCatApi: {
             showRandomImg: {
@@ -126,37 +98,27 @@ const command = {
         },
 
     },
-    translate: {
-        toTraditionalChinese: {
-            regex: /^mic翻譯 (.+)$/,
-            name: "mic翻譯 {文字內容}",
-            description: "將文字內容翻譯成中文",
-        },
-        toAnotherLanguage: {
-            regex: /^mic翻成(.+)文 (.+)$/,
-            name: "mic翻成{中文/英文/日文/韓文} {文字內容}",
-            description: "將文字內容翻譯成指定語言. ex: mic翻成日文 test",
-        }
 
-    },
     ptt: {
         beauty: {
             showRandomFemaleImg: {
-                regex: /^mic妹子呢$/,
+                regex: /^mic妹子呢$/i,
                 name: "mic妹子呢",
                 description: "從ptt表特版隨機抽正妹圖",
             }
         }
     },
-    chatbot: {
-        chatGPT3point5: {
-            chat: {
-                regex: /^@mic(.+)$/,
-                name: "@mic(對話內容)",
-                description: "跟mic聊天",
+    botLibre: {
+        bot: {
+            chatGpt: {
+                chat: {
+                    regex: /^@mic(.+)$/i,
+                    name: "@mic {對話內容}",
+                    description: "跟mic聊天",
+
+                }
 
             }
-
         }
     }
 };

@@ -10,7 +10,6 @@ const ApiHandler = require("./ApiHandler");
 const commandObj = require("./command");
 
 const guessNumberEventHandler = require("./eventHandler/GuessNumberEventHandler");
-const trashTalkEventHandler = require("./eventHandler/TrashTalkEventhandler");
 const weatherEventHandler = require("./eventHandler/WeatherEventHandler");
 const ImgEventhandler = require("./eventHandler/ImgEventHandler");
 const TheCatApiEventHandler = require("./eventHandler/TheCatApiEventHandler");
@@ -19,8 +18,7 @@ const ShibeOnlineApiEventHandler = require("./eventHandler/ShibeOnlineApiEventHa
 const GoogleTranslateEventHandler = require("./eventHandler/GoogleTranslateEventHandler");
 const ReplyHandler = require("./ReplyHandler");
 const PttBeautyEventHandler = require("./eventHandler/ptt/PttBeautyEventHandler");
-const ChatGPT3point5DataHandler = require("../utils/chatBot/chatGPT3.5/ChatGPT3point5DataHandler");
-const ChatGPT3point5EventHandler = require("./eventHandler/chatbot/ChatGPT3point5EventHandler");
+const ChatGptEventHandler = require("./eventHandler/botLibre/ChatGptEventHandler");
 
 // event handler
 const EventHandler = async function (req, client, event) {
@@ -45,16 +43,10 @@ const EventHandler = async function (req, client, event) {
 
 
     // chatGPT3.5
-    ChatGPT3point5EventHandler(client, event);
-
-    // google翻譯
-    GoogleTranslateEventHandler(client, event);
+    ChatGptEventHandler(client, event);
 
     // 終極密碼
     guessNumberEventHandler(client, event);
-
-    // 幹話相關
-    trashTalkEventHandler(client, event);
 
     // 天氣預報相關
     weatherEventHandler(client, event);
@@ -99,24 +91,6 @@ const EventHandler = async function (req, client, event) {
         return lineReplyHandler.replyWithText(client, event, outputMsg);
     }
 
-    // 搜google圖片(暫不開放)
-    if (commandObj.search.google.regex.exec(eventMessageText)) {
-
-        // 此功能暫不開放
-        return;
-
-        const regex = new RegExp(commandObj.search.google.regex);
-        const outputArr = regex.exec(eventMessageText);
-        const keyword = outputArr[1];
-
-        const googleSearchImage = require("../API/google/search/GoogleSearchImage");
-        const data = await googleSearchImage(keyword);
-        const items = data.items;
-        const imgLink = items[0].link;
-
-        return lineReplyHandler.replyWithImg(client, event, imgLink, imgLink);
-
-    }
 
     // google導航
     // https://www.google.com.tw/maps/dir/地點1/地點2

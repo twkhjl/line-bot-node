@@ -5,13 +5,13 @@ const { XMLParser, XMLBuilder, XMLValidator } = require("fast-xml-parser");
 const messageSetting = "你現在是一個叫做Mic的聊天機器人,請使用繁體中文跟我對話;";
 
 
-const ChatGPT3point5DataHandler = {
+const ChatGptDataHandler = {
     chat: async (inputMessage) => {
         const application_id = process.env.BOTLIBRE_APPLICATION_ID;
         const bot_id = process.env.BOTLIBRE_BOT_ID;
         const message = messageSetting + inputMessage;
 
-        const raw_url = "https://www.botlibre.com/rest/api/form-chat?application={application_id}&instance={bot_id}&message={message}";
+        const raw_url = process.env.BOTLIBRE_API_CHAT_URL;
 
         const url = raw_url
             .replace("{application_id}", application_id)
@@ -35,5 +35,5 @@ const ChatGPT3point5DataHandler = {
 }
 
 
-module.exports = ChatGPT3point5DataHandler;
+module.exports = ChatGptDataHandler;
 
