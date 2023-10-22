@@ -64,7 +64,7 @@ const EventHandler = async function (req, client, event) {
     ShibeOnlineApiEventHandler(client, event);
 
     // ptt表特版
-    PttBeautyEventHandler(client, event);
+    // PttBeautyEventHandler(client, event);
 
     // 取得群組id用
     if (eventMessageText == 'groupid' && groupId) {
