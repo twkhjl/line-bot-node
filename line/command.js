@@ -99,20 +99,20 @@ const command = {
 
     },
 
-    ptt: {
-        beauty: {
-            showRandomFemaleImg: {
-                regex: /^mic(妹子|正妹)呢$/i,
-                name: "mic妹子/正妹呢",
-                description: "從ptt表特版隨機抽正妹圖",
-            },
-            showRandomMaleImg: {
-                regex: /^mic帥哥呢$/i,
-                name: "mic帥哥呢",
-                description: "從ptt表特版隨機抽帥哥圖",
-            }
-        }
-    },
+    // ptt: {
+    //     beauty: {
+    //         showRandomFemaleImg: {
+    //             regex: /^mic(妹子|正妹)呢$/i,
+    //             name: "mic妹子/正妹呢",
+    //             description: "從ptt表特版隨機抽正妹圖",
+    //         },
+    //         showRandomMaleImg: {
+    //             regex: /^mic帥哥呢$/i,
+    //             name: "mic帥哥呢",
+    //             description: "從ptt表特版隨機抽帥哥圖",
+    //         }
+    //     }
+    // },
     botLibre: {
         bot: {
             chatGpt: {
