@@ -1,19 +1,19 @@
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const numHelper = require('../../../helpers/numHelper');
+const pttBeautyDataFilterHandler = require("./PttBeautyDataFilter");
 
+const headers = {
+    "credentials": "include",
+    "Cookie": "over18=1",
+};
 const PttBeautyDataHandler = {
 
-    getRandomFemaleImg: async () => {
+    // 取得隨機文章資料
+    getRandomPosts: async function (min, max) {
 
-
-        const page_num = numHelper.randomIntegerFromInterval(3000, 4006);
+        const page_num = numHelper.randomIntegerFromInterval(min, max);
         const url = `https://www.ptt.cc/bbs/Beauty/index${page_num}.html`;
-
-        const headers = {
-            "credentials": "include",
-            "Cookie": "over18=1",
-        }
 
         const response = await fetch(url, {
             headers: headers,
@@ -23,37 +23,72 @@ const PttBeautyDataHandler = {
         const $ = cheerio.load(data);
         let postsOrigin = [];
 
-        postsOrigin = $('.r-ent a').map((index, obj) => {
-
+        postsOrigin = $('.r-ent').map((index, obj) => {
             return {
-                name: $(obj).text(),
-                link: $(obj).attr('href'),
+                author:$(obj).find('.author').text(),
+                pushCnt:$(obj).find('.nrec span').text(),
+                date:$(obj).find('.date').text(),
+                name: $(obj).find(".title a").text(),
+                link: $(obj).find(".title a").attr('href'),
             };
         }).get();
 
+        return postsOrigin;
+
+    },
+
+    // 篩選文章列表資料
+    filterPost: function (postsOrigin, filterType) {
+
+        return postsOrigin.filter(post => {
+            return pttBeautyDataFilterHandler[filterType](post);
+        });
+
+    },
+
+    // 根據文章網址取得文章內容
+    getPostDetail: async function (postUrl) {
+
+        const urlPrefix = "https://www.ptt.cc";
+        const url = urlPrefix + postUrl;
+
+        const response = await fetch(url, {
+            headers: headers,
+        })
 
 
+        if (!response || !response.text) {
+
+            return new Promise((resolve, reject) => resolve({ hasErr: true, err: "no-img" }));
+        }
+
+        return response.text();
+
+    },
+
+    // 從文章內容html擷取出圖片連結
+    getImgUrlFromPostDetail: async function (postDetail) {
+
+        let images = postDetail.match(/imgur.com\/[0-9a-zA-Z]{7}/g);
+
+        images = [...new Set(images)];
+
+        if (!images || images.length <= 0) {
+            return new Promise((resolve, reject) => resolve({ hasErr: true, err: "images array empty" }));
+        }
+        const formattedImgs = images.map(img => "https://" + img + ".jpg");
+
+        return new Promise((resolve, reject) => resolve(formattedImgs));
+
+    },
+
+    // 取得隨機妹子圖片
+    getRandomFemaleImg: async function () {
+
+        const postsOrigin = await this.getRandomPosts(3000, 4006);
         let postsFilter = [];
 
-        postsFilter = postsOrigin.filter(post => {
-            const cond = {
-                filterSearchLink: !/\/search/gm.exec(post.link),
-                femaleOnly: !/帥哥/gm.exec(post.name),
-                noHugeSize: !/大尺碼/gm.exec(post.name),
-                noAnnouncement: !/(公告|水桶)/gm.exec(post.name),
-                noBoob: !/(奶|兇|胸)/gm.exec(post.name),
-                noBikini: !/(比基尼|泳裝)/gm.exec(post.name),
-                noSeductive: !/(凸|翹|性感|尻|辣|寫真|暴力)/gm.exec(post.name),
-                noTiktok: !/抖音/gm.exec(post.name),
-            }
-            return cond.filterSearchLink
-                && cond.femaleOnly
-                && cond.noHugeSize
-                && cond.noAnnouncement
-                && cond.noBoob
-                && cond.noBikini
-                && cond.noTiktok
-        });
+        postsFilter = this.filterPost(postsOrigin, "filterFemaleImg");
 
 
         if (!postsFilter || postsFilter.length <= 0) {
@@ -62,35 +97,43 @@ const PttBeautyDataHandler = {
         }
 
         const postsFilterRandomIdx = numHelper.generateRndomNumber(postsFilter.length - 1);
-        const postUrl = "https://www.ptt.cc" + postsFilter[postsFilterRandomIdx].link;
+        const postUrl = postsFilter[postsFilterRandomIdx].link;
+
+        const postDetail = await this.getPostDetail(postUrl);
+        
+        const imgs = await this.getImgUrlFromPostDetail(postDetail);
+        
+        const imgsRandomIdx = numHelper.generateRndomNumber(imgs.length - 1);
+        const output = imgs[imgsRandomIdx];
+
+        return new Promise((resolve, reject) => resolve(output));
+
+    },
+
+    // 取得隨機帥哥圖片
+    getRandomMaleImg: async function () {
+
+        const postsOrigin = await this.getRandomPosts(3000, 4006);
+        let postsFilter = [];
+
+        postsFilter = this.filterPost(postsOrigin, "filterMaleImg");
 
 
-        const responseBodyImg = await fetch(postUrl, {
-            headers: headers,
-        })
+        if (!postsFilter || postsFilter.length <= 0) {
 
-
-        if (!responseBodyImg || !responseBodyImg.text) {
-
-            return new Promise((resolve, reject) => resolve({ hasErr: true, err: "no-img" }));
+            return new Promise((resolve, reject) => resolve({ hasErr: true, err: "no posts after filter" }));
         }
 
-        const dataImg = await responseBodyImg.text();
+        const postsFilterRandomIdx = numHelper.generateRndomNumber(postsFilter.length - 1);
+        const postUrl = postsFilter[postsFilterRandomIdx].link;
 
-        let images = dataImg.match(/imgur.com\/[0-9a-zA-Z]{7}/g);
-        images = [...new Set(images)];
+        const postDetail = await this.getPostDetail(postUrl);
+        
+        const imgs = await this.getImgUrlFromPostDetail(postDetail);
+        
+        const imgsRandomIdx = numHelper.generateRndomNumber(imgs.length - 1);
+        const output = imgs[imgsRandomIdx];
 
-        if (!images || images.length <= 0) {
-
-            return new Promise((resolve, reject) => resolve({ hasErr: true, err: "images array empty" }));
-        }
-
-
-
-        const formattedImgs = images.map(img => "https://" + img + ".jpg");
-
-        const formattedImgsRandomIdx = numHelper.generateRndomNumber(formattedImgs.length - 1);
-        const output = formattedImgs[formattedImgsRandomIdx];
         return new Promise((resolve, reject) => resolve(output));
 
     }

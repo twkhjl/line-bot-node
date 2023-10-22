@@ -70,7 +70,7 @@ const command = {
             }
         }
     },
-    
+
     img: {
         theCatApi: {
             showRandomImg: {
@@ -105,6 +105,11 @@ const command = {
                 regex: /^mic妹子呢$/i,
                 name: "mic妹子呢",
                 description: "從ptt表特版隨機抽正妹圖",
+            },
+            showRandomMaleImg: {
+                regex: /^mic帥哥呢$/i,
+                name: "mic帥哥呢",
+                description: "從ptt表特版隨機抽帥哥圖",
             }
         }
     },
