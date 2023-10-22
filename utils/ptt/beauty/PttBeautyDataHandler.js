@@ -136,6 +136,12 @@ const PttBeautyDataHandler = {
         const imgsRandomIdx = numHelper.generateRndomNumber(imgs.length - 1);
         const output = imgs[imgsRandomIdx];
 
+        const isImgUrlValid = await fetch(output);
+
+        if (!isImgUrlValid.ok || output == 'https://i.imgur.com/removed.png') {
+            return new Promise((resolve, reject) => resolve({ hasErr: true, err: "img url invalid" }));
+        }
+
         return new Promise((resolve, reject) => resolve(output));
 
     },
@@ -166,7 +172,7 @@ const PttBeautyDataHandler = {
 
         const isImgUrlValid = await fetch(output);
 
-        if (!isImgUrlValid.ok) {
+        if (!isImgUrlValid.ok || output == 'https://i.imgur.com/removed.png') {
             return new Promise((resolve, reject) => resolve({ hasErr: true, err: "img url invalid" }));
         }
 
