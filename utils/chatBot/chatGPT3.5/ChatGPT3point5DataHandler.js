@@ -24,7 +24,11 @@ const ChatGPT3point5DataHandler = {
         const regex = new RegExp(/<message>\n*(.+)<\/message>/gm);
         const outputArr = regex.exec(data);
 
-        const responseMsg = outputArr[1];
+        if(!outputArr || !outputArr[0]) return null;
+
+        const responseMsg = outputArr[0]
+        .replace("<message>","")
+        .replace("</message>","")
         return responseMsg;
     }
 }
