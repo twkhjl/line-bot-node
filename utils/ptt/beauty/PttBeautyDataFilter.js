@@ -19,7 +19,7 @@ const PttBeautyDataFilterHandler = {
 
         const filter = {
             filterSearchLink: !/\/search/gm.exec(post.link),
-            maleOnly: /\[帥哥\]/gm.exec(post.name),
+            maleOnly: /帥哥/gm.exec(post.name),
             noHugeSize: !/大尺碼/gm.exec(post.name),
             noAnnouncement: !/(公告|水桶)/gm.exec(post.name),
             noTiktok: !/抖音/gm.exec(post.name),

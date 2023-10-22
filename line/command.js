@@ -102,8 +102,8 @@ const command = {
     ptt: {
         beauty: {
             showRandomFemaleImg: {
-                regex: /^mic妹子呢$/i,
-                name: "mic妹子呢",
+                regex: /^mic(妹子|正妹)呢$/i,
+                name: "mic妹子/正妹呢",
                 description: "從ptt表特版隨機抽正妹圖",
             },
             showRandomMaleImg: {

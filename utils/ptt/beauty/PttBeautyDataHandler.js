@@ -9,6 +9,35 @@ const headers = {
 };
 const PttBeautyDataHandler = {
 
+    // 根據關鍵字取得文章列表搜索結果
+    getRandomPostsByKeyWord: async function (min, max, keyword) {
+
+        const page_num = numHelper.randomIntegerFromInterval(min, max);
+        
+        const url = `https://www.ptt.cc/bbs/Beauty/search?page=${page_num}&q=${keyword}`;
+
+        const response = await fetch(url, {
+            headers: headers,
+        })
+        const data = await response.text();
+
+        const $ = cheerio.load(data);
+        let postsOrigin = [];
+
+        postsOrigin = $('.r-ent').map((index, obj) => {
+            return {
+                author: $(obj).find('.author').text(),
+                pushCnt: $(obj).find('.nrec span').text(),
+                date: $(obj).find('.date').text(),
+                name: $(obj).find(".title a").text(),
+                link: $(obj).find(".title a").attr('href'),
+            };
+        }).get();
+
+        return postsOrigin;
+
+    },
+
     // 取得隨機文章資料
     getRandomPosts: async function (min, max) {
 
@@ -25,9 +54,9 @@ const PttBeautyDataHandler = {
 
         postsOrigin = $('.r-ent').map((index, obj) => {
             return {
-                author:$(obj).find('.author').text(),
-                pushCnt:$(obj).find('.nrec span').text(),
-                date:$(obj).find('.date').text(),
+                author: $(obj).find('.author').text(),
+                pushCnt: $(obj).find('.nrec span').text(),
+                date: $(obj).find('.date').text(),
                 name: $(obj).find(".title a").text(),
                 link: $(obj).find(".title a").attr('href'),
             };
@@ -85,7 +114,8 @@ const PttBeautyDataHandler = {
     // 取得隨機妹子圖片
     getRandomFemaleImg: async function () {
 
-        const postsOrigin = await this.getRandomPosts(3000, 4006);
+        const postsOrigin = await this.getRandomPostsByKeyWord(10, 2765,"正妹");
+
         let postsFilter = [];
 
         postsFilter = this.filterPost(postsOrigin, "filterFemaleImg");
@@ -100,9 +130,9 @@ const PttBeautyDataHandler = {
         const postUrl = postsFilter[postsFilterRandomIdx].link;
 
         const postDetail = await this.getPostDetail(postUrl);
-        
+
         const imgs = await this.getImgUrlFromPostDetail(postDetail);
-        
+
         const imgsRandomIdx = numHelper.generateRndomNumber(imgs.length - 1);
         const output = imgs[imgsRandomIdx];
 
@@ -113,7 +143,7 @@ const PttBeautyDataHandler = {
     // 取得隨機帥哥圖片
     getRandomMaleImg: async function () {
 
-        const postsOrigin = await this.getRandomPosts(3000, 4006);
+        const postsOrigin = await this.getRandomPostsByKeyWord(1, 122,"帥哥");
         let postsFilter = [];
 
         postsFilter = this.filterPost(postsOrigin, "filterMaleImg");
@@ -128,9 +158,9 @@ const PttBeautyDataHandler = {
         const postUrl = postsFilter[postsFilterRandomIdx].link;
 
         const postDetail = await this.getPostDetail(postUrl);
-        
+
         const imgs = await this.getImgUrlFromPostDetail(postDetail);
-        
+
         const imgsRandomIdx = numHelper.generateRndomNumber(imgs.length - 1);
         const output = imgs[imgsRandomIdx];
 

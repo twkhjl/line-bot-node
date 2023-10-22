@@ -13,7 +13,7 @@ const PttBeautyEventHandler = async function (client, event) {
             getRandomImgErr = 1;
             return console.log(err);
         });
-        
+
         if (getRandomImgErr) return;
 
         if (!randomImg || randomImg.hasErr) return;
@@ -32,6 +32,7 @@ const PttBeautyEventHandler = async function (client, event) {
             getRandomImgErr = 1;
             return console.log(err);
         });
+
         if (getRandomImgErr) return;
 
         if (!randomImg || randomImg.hasErr) return;
