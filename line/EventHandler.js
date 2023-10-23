@@ -19,6 +19,7 @@ const GoogleTranslateEventHandler = require("./eventHandler/GoogleTranslateEvent
 const ReplyHandler = require("./ReplyHandler");
 const PttBeautyEventHandler = require("./eventHandler/ptt/PttBeautyEventHandler");
 const ChatGptEventHandler = require("./eventHandler/botLibre/ChatGptEventHandler");
+const PttBeautyModel = require("../models/PttBeautyModel");
 
 // event handler
 const EventHandler = async function (req, client, event) {
@@ -33,6 +34,7 @@ const EventHandler = async function (req, client, event) {
     const groupId = event.source && event.source.groupId ? event.source.groupId : "";
 
 
+    
 
     // 顯示教學
     if (commandObj.readme.regex.exec(event.message.text)) {
@@ -64,7 +66,9 @@ const EventHandler = async function (req, client, event) {
     ShibeOnlineApiEventHandler(client, event);
 
     // ptt表特版
-    // PttBeautyEventHandler(client, event);
+    PttBeautyEventHandler(client, event);
+
+    
 
     // 取得群組id用
     if (eventMessageText == 'groupid' && groupId) {
@@ -77,7 +81,6 @@ const EventHandler = async function (req, client, event) {
         if (groupSummaryErr) return;
         return console.log(output);
     }
-
 
     // 搜索youtube
     //https://www.youtube.com/results?search_query=
