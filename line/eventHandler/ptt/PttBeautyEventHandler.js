@@ -12,43 +12,15 @@ const PttBeautyEventHandler = async function (client, event) {
         return lineReplyHandler.replyWithImg(client, event, img, img);
     }
 
-    // 隨機正妹圖片
-    // if (commandObj.ptt.beauty.showRandomFemaleImg.regex.exec(event.message.text)) {
-
-
-    //     let getRandomImgErr = 0;
-    //     const randomImg = await PttBeautyDataHandler.getRandomFemaleImg().catch(err => {
-    //         getRandomImgErr = 1;
-    //         return console.log(err);
-    //     });
-
-    //     if (getRandomImgErr) return;
-
-    //     if (!randomImg || randomImg.hasErr) return;
-
-
-    //     return lineReplyHandler.replyWithImg(client, event, randomImg, randomImg);
-
-    // }
 
      // 隨機帥哥圖片
-    //  if (commandObj.ptt.beauty.showRandomMaleImg.regex.exec(event.message.text)) {
+     if (commandObj.ptt.beauty.showRandomMaleImg.regex.exec(event.message.text)) {
 
+        const img = await PttBeautyModel.getRandomMaleImg();
+        if (!img) return null;
+        return lineReplyHandler.replyWithImg(client, event, img, img);
 
-    //     let getRandomImgErr = 0;
-    //     const randomImg = await PttBeautyDataHandler.getRandomMaleImg().catch(err => {
-    //         getRandomImgErr = 1;
-    //         return console.log(err);
-    //     });
-
-    //     if (getRandomImgErr) return;
-
-    //     if (!randomImg || randomImg.hasErr) return;
-
-
-    //     return lineReplyHandler.replyWithImg(client, event, randomImg, randomImg);
-
-    // }
+    }
 
 
 

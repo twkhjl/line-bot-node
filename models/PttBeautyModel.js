@@ -42,7 +42,7 @@ const PttBeautyModel = {
         });
     },
     insert: data => {
-        const sql = `INSERT INTO ${tableName} (url, gender, blacklist)
+        const sql = `INSERT INTO ${tableName} (url, gender, blacklist,created_at)
         VALUES ?`;
         
         const args = data;
@@ -63,6 +63,28 @@ const PttBeautyModel = {
 
         const sql = `SELECT url FROM ptt_beauty_imgs
         WHERE gender='female' AND blacklist <> 1
+        ORDER BY RAND()
+        LIMIT 1;`;
+        const args = [];
+
+        return new Promise((resolve, reject) => {
+            db.query(sql, args, (err, rows) => {
+                if (err) {
+                    return reject(err);
+                }
+                if(rows[0]){
+                    return resolve(rows[0].url);
+                }
+                return resolve(rows);
+            });
+        });
+    },
+
+     // 從資料庫隨機抽現成網址
+     getRandomMaleImg: async () => {
+
+        const sql = `SELECT url FROM ptt_beauty_imgs
+        WHERE gender='male' AND blacklist <> 1
         ORDER BY RAND()
         LIMIT 1;`;
         const args = [];
