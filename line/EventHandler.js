@@ -19,7 +19,7 @@ const GoogleTranslateEventHandler = require("./eventHandler/GoogleTranslateEvent
 const ReplyHandler = require("./ReplyHandler");
 const PttBeautyEventHandler = require("./eventHandler/ptt/PttBeautyEventHandler");
 const ChatGptEventHandler = require("./eventHandler/botLibre/ChatGptEventHandler");
-const PttBeautyModel = require("../models/PttBeautyModel");
+const FreePlantApiEventHandler = require("./eventHandler/FreePlantApiEventHandler");
 
 // event handler
 const EventHandler = async function (req, client, event) {
@@ -34,7 +34,7 @@ const EventHandler = async function (req, client, event) {
     const groupId = event.source && event.source.groupId ? event.source.groupId : "";
 
 
-    
+
 
     // 顯示教學
     if (commandObj.readme.regex.exec(event.message.text)) {
@@ -64,6 +64,9 @@ const EventHandler = async function (req, client, event) {
 
     // 柴柴圖
     ShibeOnlineApiEventHandler(client, event);
+
+    // 植物圖
+    FreePlantApiEventHandler(client, event);
 
     // ptt表特版
     PttBeautyEventHandler(client, event);
