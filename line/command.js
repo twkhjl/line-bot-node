@@ -96,6 +96,14 @@ const command = {
 
             }
         },
+        freePlantApi: {
+            showRandomImg: {
+                regex: /^mic植物呢$/,
+                name: "mic植物呢",
+                description: "抽隨機植物圖",
+
+            }
+        },
 
     },
 
