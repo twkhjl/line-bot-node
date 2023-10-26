@@ -82,11 +82,19 @@ const GuessNumberEventHandler = function (client, event) {
 
         }
 
+        if (gameData.groupData[index].minNumber == inputNumber
+            || inputNumber == gameData.groupData[index].maxNumber) {
+
+            outputMsg = `請猜${gameData.groupData[index].minNumber}~${gameData.groupData[index].maxNumber}"之間"的數字 ^_^|||`;
+            return lineReplyHandler.replyWithText(client, event, outputMsg);
+
+        }
+
         if (gameData.groupData[index].minNumber < inputNumber
             && inputNumber < correctNumber
         ) {
 
-            gameData.groupData[index].minNumber = inputNumber + 1;
+            gameData.groupData[index].minNumber = inputNumber;
 
             const isUserLose = handleUserLose(client, event, index);
             if (isUserLose) return;
@@ -99,7 +107,7 @@ const GuessNumberEventHandler = function (client, event) {
             && inputNumber < gameData.groupData[index].maxNumber
         ) {
 
-            gameData.groupData[index].maxNumber = inputNumber - 1;
+            gameData.groupData[index].maxNumber = inputNumber;
 
             const isUserLose = handleUserLose(client, event, index);
             if (isUserLose) return;
@@ -109,12 +117,12 @@ const GuessNumberEventHandler = function (client, event) {
 
         }
         
-        if (gameData.groupData[index].minNumber == inputNumber) {
-            gameData.groupData[index].minNumber = inputNumber + 1;
-        }
-        if (gameData.groupData[index].maxNumber == inputNumber) {
-            gameData.groupData[index].maxNumber = inputNumber - 1;
-        }
+        // if (gameData.groupData[index].minNumber == inputNumber) {
+        //     gameData.groupData[index].minNumber = inputNumber + 1;
+        // }
+        // if (gameData.groupData[index].maxNumber == inputNumber) {
+        //     gameData.groupData[index].maxNumber = inputNumber - 1;
+        // }
         const isUserLose = handleUserLose(client, event, index);
         if (isUserLose) return;
 
