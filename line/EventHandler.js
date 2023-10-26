@@ -20,6 +20,7 @@ const ReplyHandler = require("./ReplyHandler");
 const PttBeautyEventHandler = require("./eventHandler/ptt/PttBeautyEventHandler");
 const ChatGptEventHandler = require("./eventHandler/botLibre/ChatGptEventHandler");
 const FreePlantApiEventHandler = require("./eventHandler/FreePlantApiEventHandler");
+const InstructionEventHandler = require("./instruction/InstructionEventHandler");
 
 // event handler
 const EventHandler = async function (req, client, event) {
@@ -35,13 +36,9 @@ const EventHandler = async function (req, client, event) {
 
 
 
+    // 指令教學及輪播
+    InstructionEventHandler(client, event, { webHookUrl: webHookUrl });
 
-    // 顯示教學
-    if (commandObj.readme.regex.exec(event.message.text)) {
-        const outputMsg = `請參考指令教學網址:\n${webHookUrl}/readme`;
-
-        return lineReplyHandler.replyWithText(client, event, outputMsg);
-    }
 
 
     // chatGPT3.5
@@ -71,7 +68,7 @@ const EventHandler = async function (req, client, event) {
     // ptt表特版
     PttBeautyEventHandler(client, event);
 
-    
+
 
     // 取得群組id用
     if (eventMessageText == 'groupid' && groupId) {

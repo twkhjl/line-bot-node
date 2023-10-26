@@ -1,9 +1,17 @@
 const command = {
-    readme: {
-        regex: /^mic怎麼用$/i,
-        name: "mic怎麼用",
-        description: "顯示mic的使用教學網址",
+    instruction: {
 
+        carousel: {
+            regex: /^mic$/i,
+            name: "mic",
+            description: "顯示mic的常用指令輪播畫面",
+        },
+        readme: {
+            regex: /^mic怎麼用$/i,
+            name: "mic怎麼用",
+            description: "顯示mic的使用教學網址",
+
+        },
     },
 
 
