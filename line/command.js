@@ -14,45 +14,25 @@ const command = {
         },
     },
 
+    google:{
+        youtube:{
+            multipleResult: {
+                regex: /^yt列表 (.+)$/i,
+                name: "yt列表 {關鍵字}",
+                description: "讓mic搜尋youtube並回傳搜尋結果網頁",
+            },
 
-    showRandomImg: {
-        regex: /^mic圖呢$/i,
-        name: "mic圖呢",
-        description: "讓mic秀出隨機梗圖",
+            apiSingleResult: {
+                regex: /^yt (.+)$/i,
+                name: "yt {關鍵字}",
+                description: "搜尋youtube並回傳單一影片",
+            },
 
-    },
-
-    showImgByTitle: {
-        regex: /^mic支援 (.+)$/i,
-        name: "mic支援 {圖片關鍵字}",
-        description: "根據圖片關鍵字秀出梗圖",
-
-    },
-    showAllImgTitle: {
-        regex: /^mic支援那些圖$/i,
-        name: "mic支援那些圖",
-        description: "讓mic秀出有標題的梗圖列表",
-
-    },
-    showRainfullRate: {
-        regex: /^mic明天(.+)區?會下雨嗎$/i,
-        name: "mic明天{某某區}會下雨嗎",
-        description: "查詢明天高雄特定行政區的降雨機率,'區'字可不打",
-
-    },
-    showRadarImg: {
-        regex: /^mic雷達回波圖$/i,
-        name: "mic雷達回波圖",
-        description: "顯示高雄的雷達回波圖",
-
+        }
     },
 
     search: {
-        youtube: {
-            regex: /^mic搜yt (.+)$/i,
-            name: "mic搜yt {關鍵字}",
-            description: "讓mic搜尋youtube",
-        },
+        
 
         googleMap: {
             regex: /^mic導航 (.+)到(.+)$/i,

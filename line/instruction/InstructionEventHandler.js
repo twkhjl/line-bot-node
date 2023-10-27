@@ -219,8 +219,18 @@ const InstructionEventHandler = function (client, event, options = null) {
                                 "style": "secondary",
                                 "action": {
                                     "type": "message",
-                                    "label": "顯示雷達回波圖",
-                                    "text": "mic雷達回波圖"
+                                    "label": "搜尋yt指令範例",
+                                    "text": "yt 橄欖樹"
+                                }
+                            },
+
+                            {
+                                "type": "button",
+                                "style": "secondary",
+                                "action": {
+                                    "type": "message",
+                                    "label": "跟mic機器人聊天範例",
+                                    "text": "@mic你好"
                                 }
                             },
 

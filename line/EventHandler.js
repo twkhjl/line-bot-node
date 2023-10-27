@@ -21,6 +21,7 @@ const PttBeautyEventHandler = require("./eventHandler/ptt/PttBeautyEventHandler"
 const ChatGptEventHandler = require("./eventHandler/botLibre/ChatGptEventHandler");
 const FreePlantApiEventHandler = require("./eventHandler/FreePlantApiEventHandler");
 const InstructionEventHandler = require("./instruction/InstructionEventHandler");
+const YoutubeEventHandler = require("./eventHandler/google/YoutubeEventhandler");
 
 // event handler
 const EventHandler = async function (req, client, event) {
@@ -47,12 +48,6 @@ const EventHandler = async function (req, client, event) {
     // 終極密碼
     guessNumberEventHandler(client, event);
 
-    // 天氣預報相關
-    weatherEventHandler(client, event);
-
-    // 梗圖相關
-    ImgEventhandler(client, event);
-
     // 貓圖
     TheCatApiEventHandler(client, event);
 
@@ -68,7 +63,8 @@ const EventHandler = async function (req, client, event) {
     // ptt表特版
     PttBeautyEventHandler(client, event);
 
-
+    // 搜尋yt
+    YoutubeEventHandler(client,event);
 
     // 取得群組id用
     if (eventMessageText == 'groupid' && groupId) {
@@ -82,17 +78,7 @@ const EventHandler = async function (req, client, event) {
         return console.log(output);
     }
 
-    // 搜索youtube
-    //https://www.youtube.com/results?search_query=
-    if (commandObj.search.youtube.regex.exec(eventMessageText)) {
-
-        const regex = new RegExp(commandObj.search.youtube.regex);
-        const outputArr = regex.exec(eventMessageText);
-        const keyword = outputArr[1];
-        const outputMsg = "https://www.youtube.com/results?search_query=" + keyword;
-
-        return lineReplyHandler.replyWithText(client, event, outputMsg);
-    }
+    
 
 
     // google導航

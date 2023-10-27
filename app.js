@@ -12,6 +12,31 @@ app.set('view engine', 'ejs');
 
 app.use('/callback', LineRouter);
 
+// 本地端,勿push=============
+
+const beautyRouter = require("./routers/ptt/BeautyRouter");
+app.use(express.json());
+app.use('/ptt/beauty', beautyRouter);
+
+// const testRouter = require("./routers/TestRouter");
+// app.use("/test/",testRouter);
+
+app.get('/test',async (req,res)=>{
+    const fetch = require('node-fetch');
+    const YoutubeSearchAPI=require("./API/google/YoutubeSearchAPI");
+
+    const searchResult = await YoutubeSearchAPI.searchByKeyword("starcraft");
+    const youtubeItems = searchResult.items;
+    const youtubeLinks = youtubeItems.map(item=>{
+        return "https://www.youtube.com/watch?v="+item.id.videoId;
+    })
+    return console.log(youtubeLinks);
+
+
+
+})
+// 本地端,勿push=============
+
 app.get('/', (req, res) => {
     res.render('home');
 })
