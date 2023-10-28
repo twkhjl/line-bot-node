@@ -1,5 +1,5 @@
 const PttDataFilter = require("../../../utils/ptt/PttDataFilter");
-const PttDataHandler = require("../../../utils/ptt/pttDataHandler");
+const PttDataHandler = require("../../../utils/ptt/PttDataHandler");
 const commandObj = require("../../command");
 const lineReplyHandler = require("../../ReplyHandler");
 
