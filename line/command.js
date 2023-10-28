@@ -107,7 +107,24 @@ const command = {
                 name: "mic帥哥呢",
                 description: "從ptt表特版隨機抽帥哥圖",
             }
-        }
+        },
+        posts:{
+            showSupportedBoardName:{
+                regex: /^mic支援ptt那些板$/i,
+                name: "mic支援ptt那些板",
+                description: "顯示目前所有支援搜尋文章的ptt板名",
+            },
+            showHotPosts:{
+                regex: /^(.+)板?熱門$/i,
+                name: "{ptt板名}熱門 ex:政黑熱門",
+                description: "顯示ptt特定板面熱門文章(60推以上)",
+            },
+            showBooPosts:{
+                regex: /^(.+)板?噓文$/i,
+                name: "{ptt板名}噓文 ex:政黑噓文",
+                description: "顯示ptt特定板面噓文較多的文章(X1以上)",
+            } 
+        },
     },
     botLibre: {
         bot: {

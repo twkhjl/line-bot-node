@@ -12,13 +12,15 @@ const InstructionEventHandler = function (client, event, options = null) {
             outputMsg = `請參考指令教學網址:\n${webHookUrl}/readme`;
         }
 
-        if(!outputMsg) return null;
+        if (!outputMsg) return null;
 
         return lineReplyHandler.replyWithText(client, event, outputMsg);
     }
 
     // 顯示指令輪播圖
     if (commandObj.instruction.carousel.regex.exec(event.message.text)) {
+
+        const bubbleSize = "kilo";
 
         const flexMessage = {
             "type": "carousel",
@@ -32,13 +34,20 @@ const InstructionEventHandler = function (client, event, options = null) {
                         "aspectMode": "cover",
                         "url": "https://images.pexels.com/photos/1907785/pexels-photo-1907785.jpeg?auto=compress&cs=tinysrgb&w=600"
                     },
-                    "size": "deca",
+                    "size": bubbleSize,
                     "body": {
                         "type": "box",
 
                         "layout": "vertical",
                         "spacing": "md",
                         "contents": [
+                            {
+                                "type": "text",
+                                "text": "關於",
+                                "weight": "bold",
+                                "align": "center",
+                                "size": "xl",
+                            },
                             {
                                 "type": "button",
                                 "style": "secondary",
@@ -63,6 +72,7 @@ const InstructionEventHandler = function (client, event, options = null) {
                     }
                 },
 
+               
                 {
                     "type": "bubble",
                     "hero": {
@@ -70,14 +80,22 @@ const InstructionEventHandler = function (client, event, options = null) {
                         "size": "full",
                         "aspectRatio": "20:13",
                         "aspectMode": "cover",
-                        "url": "https://images.pexels.com/photos/840810/pexels-photo-840810.jpeg?auto=compress&cs=tinysrgb&w=600"
+                        "url": "https://images.pexels.com/photos/1770809/pexels-photo-1770809.jpeg?auto=compress&cs=tinysrgb&w=600"
                     },
-                    "size": "deca",
+                    "size": bubbleSize,
                     "body": {
                         "type": "box",
                         "layout": "vertical",
                         "spacing": "md",
                         "contents": [
+
+                            {
+                                "type": "text",
+                                "text": "抽圖",
+                                "weight": "bold",
+                                "align": "center",
+                                "size": "xl",
+                            },
 
                             {
                                 "type": "button",
@@ -97,25 +115,6 @@ const InstructionEventHandler = function (client, event, options = null) {
                                     "text": "mic帥哥呢"
                                 }
                             },
-
-                        ]
-                    }
-                },
-                {
-                    "type": "bubble",
-                    "hero": {
-                        "type": "image",
-                        "size": "full",
-                        "aspectRatio": "20:13",
-                        "aspectMode": "cover",
-                        "url": "https://images.pexels.com/photos/1770809/pexels-photo-1770809.jpeg?auto=compress&cs=tinysrgb&w=600"
-                    },
-                    "size": "deca",
-                    "body": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "spacing": "md",
-                        "contents": [
 
                             {
                                 "type": "button",
@@ -167,12 +166,19 @@ const InstructionEventHandler = function (client, event, options = null) {
                         "aspectMode": "cover",
                         "url": "https://images.pexels.com/photos/3800795/pexels-photo-3800795.jpeg?auto=compress&cs=tinysrgb&w=600"
                     },
-                    "size": "deca",
+                    "size": bubbleSize,
                     "body": {
                         "type": "box",
                         "layout": "vertical",
                         "spacing": "md",
                         "contents": [
+                            {
+                                "type": "text",
+                                "text": "小遊戲",
+                                "weight": "bold",
+                                "align": "center",
+                                "size": "xl"
+                            },
 
                             {
                                 "type": "button",
@@ -205,14 +211,21 @@ const InstructionEventHandler = function (client, event, options = null) {
                         "size": "full",
                         "aspectRatio": "20:13",
                         "aspectMode": "cover",
-                        "url": "https://images.pexels.com/photos/844297/pexels-photo-844297.jpeg?auto=compress&cs=tinysrgb&w=600"
+                        "url": "https://images.pexels.com/photos/812264/pexels-photo-812264.jpeg?auto=compress&cs=tinysrgb&w=600"
                     },
-                    "size": "deca",
+                    "size": bubbleSize,
                     "body": {
                         "type": "box",
                         "layout": "vertical",
                         "spacing": "md",
                         "contents": [
+                            {
+                                "type": "text",
+                                "text": "一些教學範例",
+                                "weight": "bold",
+                                "align": "center",
+                                "size": "xl"
+                            },
 
                             {
                                 "type": "button",
@@ -233,6 +246,128 @@ const InstructionEventHandler = function (client, event, options = null) {
                                     "text": "@mic你好"
                                 }
                             },
+
+                            {
+                                "type": "button",
+                                "style": "secondary",
+                                "action": {
+                                    "type": "message",
+                                    "label": "顯示ptt熱門文章範例",
+                                    "text": "政黑板熱門"
+                                }
+                            },
+                            {
+                                "type": "button",
+                                "style": "secondary",
+                                "action": {
+                                    "type": "message",
+                                    "label": "顯示ptt熱門噓文範例",
+                                    "text": "政黑板噓文"
+                                }
+                            },
+
+                            {
+                                "type": "button",
+                                "style": "secondary",
+                                "action": {
+                                    "type": "message",
+                                    "label": "顯示支援的ptt板名",
+                                    "text": "mic支援那些ptt板名"
+                                }
+                            },
+
+                        ]
+                    }
+                },
+
+                {
+                    "type": "bubble",
+                    "hero": {
+                        "type": "image",
+                        "size": "full",
+                        "aspectRatio": "20:13",
+                        "aspectMode": "cover",
+                        "url": "https://images.pexels.com/photos/2129796/pexels-photo-2129796.png?auto=compress&cs=tinysrgb&w=600"
+                    },
+                    "size": bubbleSize,
+                    "body": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "spacing": "md",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "常用ptt熱門文章",
+                                "weight": "bold",
+                                "align": "center",
+                                "size": "xl"
+                            },
+                            {
+                                "type": "button",
+                                "style": "secondary",
+                                "action": {
+                                    "type": "message",
+                                    "label": "政黑板熱門",
+                                    "text": "政黑板熱門"
+                                }
+                            },
+                            {
+                                "type": "button",
+                                "style": "secondary",
+                                "action": {
+                                    "type": "message",
+                                    "label": "高雄板熱門",
+                                    "text": "高雄板熱門"
+                                }
+                            },
+                            {
+                                "type": "button",
+                                "style": "secondary",
+                                "action": {
+                                    "type": "message",
+                                    "label": "軍事板熱門",
+                                    "text": "軍事板熱門"
+                                }
+                            },
+                            {
+                                "type": "button",
+                                "style": "secondary",
+                                "action": {
+                                    "type": "message",
+                                    "label": "就可板熱門",
+                                    "text": "就可板熱門"
+                                }
+                            },
+                            {
+                                "type": "button",
+                                "style": "secondary",
+                                "action": {
+                                    "type": "message",
+                                    "label": "省錢板熱門",
+                                    "text": "省錢板熱門"
+                                }
+                            },
+                            {
+                                "type": "button",
+                                "style": "secondary",
+                                "action": {
+                                    "type": "message",
+                                    "label": "NBA板熱門",
+                                    "text": "NBA板熱門"
+                                }
+                            },
+                            {
+                                "type": "button",
+                                "style": "secondary",
+                                "action": {
+                                    "type": "message",
+                                    "label": "棒球板熱門",
+                                    "text": "棒球板熱門"
+                                }
+                            },
+
+
+
 
                         ]
                     }

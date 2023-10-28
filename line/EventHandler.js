@@ -22,6 +22,7 @@ const ChatGptEventHandler = require("./eventHandler/botLibre/ChatGptEventHandler
 const FreePlantApiEventHandler = require("./eventHandler/FreePlantApiEventHandler");
 const InstructionEventHandler = require("./instruction/InstructionEventHandler");
 const YoutubeEventHandler = require("./eventHandler/google/YoutubeEventhandler");
+const PttPostEventHandler = require("./eventHandler/ptt/PttPostEventHandler");
 
 // event handler
 const EventHandler = async function (req, client, event) {
@@ -65,6 +66,9 @@ const EventHandler = async function (req, client, event) {
 
     // 搜尋yt
     YoutubeEventHandler(client,event);
+
+    // ptt文章顯示相關
+    PttPostEventHandler(client,event);
 
     // 取得群組id用
     if (eventMessageText == 'groupid' && groupId) {
