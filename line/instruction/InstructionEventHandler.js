@@ -317,8 +317,17 @@ const InstructionEventHandler = function (client, event, options = null) {
                                 "style": "secondary",
                                 "action": {
                                     "type": "message",
-                                    "label": "政黑板噓文",
-                                    "text": "政黑板噓文"
+                                    "label": "高雄板熱門",
+                                    "text": "高雄板熱門"
+                                }
+                            },
+                            {
+                                "type": "button",
+                                "style": "secondary",
+                                "action": {
+                                    "type": "message",
+                                    "label": "就可板熱門",
+                                    "text": "就可板熱門"
                                 }
                             },
 
