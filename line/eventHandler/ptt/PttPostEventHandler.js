@@ -70,9 +70,8 @@ const PttPostEventHandler = async function (client, event) {
 
         const boardName = boardNameData[boardNameTW];
         const pushCnt = 60;
-        const posts = await PttPostModel.selectByBooCntWithLimit({
+        const posts = await PttPostModel.selectBooCntWithXWithLimit({
             boardName: boardName,
-            pushCnt: "X1",
             limit: 20,
         });
 

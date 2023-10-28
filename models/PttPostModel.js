@@ -75,6 +75,38 @@ const PttPostModel = {
         });
     },
 
+    // 取得有X的噓文
+    selectBooCntWithXWithLimit: (data) => {
+        const boardName = data.boardName;
+        const limit = data.limit;
+        const sql = `
+            SELECT * FROM ${tableName}
+            WHERE board_name = ?
+            AND 
+            (push_cnt = 'X1'
+            OR push_cnt = 'X2'
+            OR push_cnt = 'X3'
+            OR push_cnt = 'X4'
+            OR push_cnt = 'X5'
+            OR push_cnt = 'X6'
+            OR push_cnt = 'X7'
+            OR push_cnt = 'X8'
+            OR push_cnt = 'X9'
+            OR push_cnt = 'XX')
+            ORDER BY post_date DESC
+            LIMIT ${limit};
+        `;
+        const args = [boardName, pushCnt];
+        return new Promise((resolve, reject) => {
+            db.query(sql, args, (err, rows) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(rows);
+            });
+        });
+    },
+
     // 取得XX噓文
     select100BooCntWithLimit: (data) => {
         const boardName = data.boardName;
