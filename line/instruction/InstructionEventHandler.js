@@ -80,7 +80,7 @@ const InstructionEventHandler = function (client, event, options = null) {
                         "size": "full",
                         "aspectRatio": "20:13",
                         "aspectMode": "cover",
-                        "url": "https://images.pexels.com/photos/1770809/pexels-photo-1770809.jpeg?auto=compress&cs=tinysrgb&w=600"
+                        "url": "https://images.pexels.com/photos/290470/pexels-photo-290470.jpeg?auto=compress&cs=tinysrgb&w=600"
                     },
                     "size": bubbleSize,
                     "body": {
@@ -125,6 +125,35 @@ const InstructionEventHandler = function (client, event, options = null) {
                                     "text": "mic貓呢"
                                 }
                             },
+
+                        ]
+                    }
+                },
+
+                {
+                    "type": "bubble",
+                    "hero": {
+                        "type": "image",
+                        "size": "full",
+                        "aspectRatio": "20:13",
+                        "aspectMode": "cover",
+                        "url": "https://images.pexels.com/photos/1770809/pexels-photo-1770809.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    },
+                    "size": bubbleSize,
+                    "body": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "spacing": "md",
+                        "contents": [
+
+                            {
+                                "type": "text",
+                                "text": "抽圖2",
+                                "weight": "bold",
+                                "align": "center",
+                                "size": "xl",
+                            },
+
                             {
                                 "type": "button",
                                 "style": "secondary",
@@ -156,7 +185,6 @@ const InstructionEventHandler = function (client, event, options = null) {
                         ]
                     }
                 },
-
                 {
                     "type": "bubble",
                     "hero": {
@@ -247,34 +275,7 @@ const InstructionEventHandler = function (client, event, options = null) {
                                 }
                             },
 
-                            {
-                                "type": "button",
-                                "style": "secondary",
-                                "action": {
-                                    "type": "message",
-                                    "label": "顯示ptt熱門文章範例",
-                                    "text": "政黑板熱門"
-                                }
-                            },
-                            {
-                                "type": "button",
-                                "style": "secondary",
-                                "action": {
-                                    "type": "message",
-                                    "label": "顯示ptt熱門噓文範例",
-                                    "text": "政黑板噓文"
-                                }
-                            },
-
-                            {
-                                "type": "button",
-                                "style": "secondary",
-                                "action": {
-                                    "type": "message",
-                                    "label": "顯示支援的ptt板名",
-                                    "text": "mic支援ptt那些板"
-                                }
-                            },
+                           
 
                         ]
                     }
@@ -297,7 +298,7 @@ const InstructionEventHandler = function (client, event, options = null) {
                         "contents": [
                             {
                                 "type": "text",
-                                "text": "常用ptt熱門文章",
+                                "text": "ptt文章",
                                 "weight": "bold",
                                 "align": "center",
                                 "size": "xl"
@@ -316,58 +317,10 @@ const InstructionEventHandler = function (client, event, options = null) {
                                 "style": "secondary",
                                 "action": {
                                     "type": "message",
-                                    "label": "高雄板熱門",
-                                    "text": "高雄板熱門"
+                                    "label": "政黑板噓文",
+                                    "text": "政黑板噓文"
                                 }
                             },
-                            {
-                                "type": "button",
-                                "style": "secondary",
-                                "action": {
-                                    "type": "message",
-                                    "label": "軍事板熱門",
-                                    "text": "軍事板熱門"
-                                }
-                            },
-                            {
-                                "type": "button",
-                                "style": "secondary",
-                                "action": {
-                                    "type": "message",
-                                    "label": "就可板熱門",
-                                    "text": "就可板熱門"
-                                }
-                            },
-                            {
-                                "type": "button",
-                                "style": "secondary",
-                                "action": {
-                                    "type": "message",
-                                    "label": "省錢板熱門",
-                                    "text": "省錢板熱門"
-                                }
-                            },
-                            {
-                                "type": "button",
-                                "style": "secondary",
-                                "action": {
-                                    "type": "message",
-                                    "label": "NBA板熱門",
-                                    "text": "NBA板熱門"
-                                }
-                            },
-                            {
-                                "type": "button",
-                                "style": "secondary",
-                                "action": {
-                                    "type": "message",
-                                    "label": "棒球板熱門",
-                                    "text": "棒球板熱門"
-                                }
-                            },
-
-
-
 
                         ]
                     }
