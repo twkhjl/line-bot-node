@@ -35,8 +35,8 @@ const PttPostModel = {
         const sql = `
             SELECT * FROM ${tableName}
             WHERE board_name = ?
-            AND push_cnt >= ?
-            OR push_cnt = '爆' 
+            AND (push_cnt >= ?
+            OR push_cnt = '爆') 
             ORDER BY post_date DESC
             LIMIT ${limit};
         `;
@@ -59,8 +59,8 @@ const PttPostModel = {
         const sql = `
             SELECT * FROM ${tableName}
             WHERE board_name = ?
-            AND push_cnt  IN ( ? )
-            OR push_cnt = 'XX' 
+            AND ( push_cnt  IN ( ? )
+            OR push_cnt = 'XX' )
             ORDER BY post_date DESC
             LIMIT ${limit};
         `;
@@ -96,7 +96,7 @@ const PttPostModel = {
             ORDER BY post_date DESC
             LIMIT ${limit};
         `;
-        const args = [boardName, pushCnt];
+        const args = [boardName];
         return new Promise((resolve, reject) => {
             db.query(sql, args, (err, rows) => {
                 if (err) {
