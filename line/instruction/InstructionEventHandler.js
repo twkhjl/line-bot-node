@@ -272,7 +272,7 @@ const InstructionEventHandler = function (client, event, options = null) {
                                 "action": {
                                     "type": "message",
                                     "label": "顯示支援的ptt板名",
-                                    "text": "mic支援那些ptt板名"
+                                    "text": "mic支援ptt那些板"
                                 }
                             },
 
