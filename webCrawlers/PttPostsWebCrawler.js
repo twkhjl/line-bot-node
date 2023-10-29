@@ -25,15 +25,13 @@ const PttPostsWebCrawler = {
 
         const $ = cheerio.load(data);
 
-        const linkData = $('.btn.wide').map((index, obj) => {
-            return {
-                url: linkPrefix + $(obj).attr('href'),
-                text: $(obj).text(),
-            };
-        }).get();
-        const prevLinkData = linkData.filter(e => e.text.includes("上頁"));
-        if (!prevLinkData[0] || !prevLinkData[0].url) return null;
-        const pageNum = /\/index(\d+)\.html/gi.exec(prevLinkData[0].url)[1];
+        const href = $('a.btn.wide').filter(function() {
+            return $(this).text() === '‹ 上頁';
+          }).attr('href');
+
+        if (!href) return null;
+
+        const pageNum = /\/index(\d+)\.html/gi.exec(href)[1];
         return pageNum * 1 + 1;
 
     },
@@ -120,7 +118,7 @@ const PttPostsWebCrawler = {
     },
 
     // 取得特定版面兩個頁數之間的文章列表
-    getPostsBetweenPageNums: async function (boardName, min, max) {
+    getPostsBetweenPageNums: async function (boardName, min, max, config={}) {
 
         const numArr = ArrayHelper.getRangeArray(min, max);
 
@@ -128,6 +126,9 @@ const PttPostsWebCrawler = {
             return this.getPostsByPageNum(boardName, num);
         }))
 
+        if(config.noFlat){
+            return output;
+        }
         const outputFlat = output.flat();
 
         return outputFlat;

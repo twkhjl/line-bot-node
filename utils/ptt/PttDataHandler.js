@@ -49,15 +49,13 @@ const PttDataHandler = {
 
         const $ = cheerio.load(data);
 
-        const linkData = $('.btn.wide').map((index, obj) => {
-            return {
-                link: linkPrefix + $(obj).attr('href'),
-                text: $(obj).text(),
-            };
-        }).get();
-        const prevLinkData = linkData.filter(e => e.text.includes("上頁"));
-        if (!prevLinkData[0] || !prevLinkData[0].link) return null;
-        const pageNum = /\/index(\d+)\.html/gi.exec(prevLinkData[0].link)[1];
+        const href = $('a.btn.wide').filter(function() {
+            return $(this).text() === '‹ 上頁';
+          }).attr('href');
+
+        if (!href) return null;
+
+        const pageNum = /\/index(\d+)\.html/gi.exec(href)[1];
         return pageNum * 1 + 1;
 
     },
@@ -154,6 +152,8 @@ const PttDataHandler = {
         const output = await Promise.all(numArr.map(async (num) => {
             return this.getPostsByPageNum(boardName, num);
         }))
+
+        return output;
 
         const outputFlat = output.flat();
 

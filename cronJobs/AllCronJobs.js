@@ -6,10 +6,12 @@ const AllCronJobs = {
 
         // if (process.env.SWITCH_ENABLE_CRON_JOB*1 !== 1) return;
 
-        cron.schedule('*/10 * * * * *', () => {
-            PttCronJob.updateDB();
-            console.log('running cron job');
-        });
+        // '*/1 * * * * *' : 每一秒
+        // '*/1 * * * *' : 每一分鐘
+        // cron.schedule('*/10 * * * * *', () => {
+            // PttCronJob.updateDB();
+            // console.log('running cron job');
+        // });
     }
 }
 

@@ -30,7 +30,7 @@ const PttCronJob = {
     updateDB: async () => {
 
         // 清空資料表
-        await PttPostModel.truncate();
+        // await PttPostModel.truncate();
 
         
         let results = await Promise.all(
@@ -38,7 +38,7 @@ const PttCronJob = {
             boardNames.map(async (boardName) => {
 
                 const pageTotal = await PttPostsWebCrawler.getPageTotal(boardName);
-                const minPageNum = (pageTotal * 1 - 9) * 1 <= 0 ? pageTotal : (pageTotal * 1 - 9) * 1;
+                const minPageNum = (pageTotal * 1 - 3) * 1 <= 0 ? pageTotal : (pageTotal * 1 - 3) * 1;
 
                 const posts = await PttPostsWebCrawler.getPostsBetweenPageNums(boardName, minPageNum, pageTotal);
 
