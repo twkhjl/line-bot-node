@@ -7,7 +7,7 @@ const pttBubble2 = function (options) {
             "size": "full",
             "aspectRatio": "20:13",
             "aspectMode": "cover",
-            "url": "https://images.pexels.com/photos/2129796/pexels-photo-2129796.png?auto=compress&cs=tinysrgb&w=600"
+            "url": "https://images.pexels.com/photos/2957862/pexels-photo-2957862.jpeg?auto=compress&cs=tinysrgb&w=600"
         },
         "size": bubbleSize,
         "body": {
@@ -17,7 +17,7 @@ const pttBubble2 = function (options) {
             "contents": [
                 {
                     "type": "text",
-                    "text": "ptt文章",
+                    "text": "ptt文章2",
                     "weight": "bold",
                     "align": "center",
                     "size": "xl"
