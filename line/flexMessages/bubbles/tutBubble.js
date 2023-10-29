@@ -43,6 +43,16 @@ const tutBubble = function (options) {
                     }
                 },
 
+                {
+                    "type": "button",
+                    "style": "secondary",
+                    "action": {
+                        "type": "message",
+                        "label": "顯示支援的ptt板名範例",
+                        "text": "mic支援ptt那些板"
+                    }
+                },
+
 
 
             ]

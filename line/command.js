@@ -123,7 +123,12 @@ const command = {
                 regex: /^(.+)板?噓文$/i,
                 name: "{ptt板名}噓文 ex:政黑噓文",
                 description: "顯示ptt特定板面噓文較多的文章(X1以上)",
-            } 
+            },
+            showLatestPosts:{
+                regex: /^(.+)板?最新$/i,
+                name: "{ptt板名}最新 ex:政黑最新",
+                description: "顯示ptt特定板面最新文章",
+            }  
         },
     },
     botLibre: {

@@ -3,7 +3,6 @@ const aboutBubble = require("../flexMessages/bubbles/aboutBubble");
 const getImgBubble = require("../flexMessages/bubbles/getImgBubble");
 const getImgBubble2 = require("../flexMessages/bubbles/getImgBubble2");
 const pttBubble = require("../flexMessages/bubbles/pttBubble");
-const pttBubble2 = require("../flexMessages/bubbles/pttBubble2");
 const tutBubble = require("../flexMessages/bubbles/tutBubble");
 const lineReplyHandler = require("../ReplyHandler");
 
@@ -38,7 +37,6 @@ const InstructionEventHandler = function (client, event, options = null) {
                 getImgBubble2(bubbleConfig),
                 tutBubble(bubbleConfig),
                 pttBubble(bubbleConfig),
-                pttBubble2(bubbleConfig),
             ]
         };
         return lineReplyHandler.replyWithFlex(client, event, flexMessage);

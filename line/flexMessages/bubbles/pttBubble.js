@@ -17,7 +17,7 @@ const pttBubble = function (options) {
             "contents": [
                 {
                     "type": "text",
-                    "text": "ptt文章",
+                    "text": "ptt",
                     "weight": "bold",
                     "align": "center",
                     "size": "xl"
@@ -27,7 +27,7 @@ const pttBubble = function (options) {
                     "style": "secondary",
                     "action": {
                         "type": "message",
-                        "label": "省錢板熱門",
+                        "label": "看ptt板熱門範例",
                         "text": "省錢板熱門"
                     }
                 },
@@ -36,8 +36,8 @@ const pttBubble = function (options) {
                     "style": "secondary",
                     "action": {
                         "type": "message",
-                        "label": "電影板熱門",
-                        "text": "電影板熱門"
+                        "label": "看ptt板噓文範例",
+                        "text": "電影板噓文"
                     }
                 },
                 {
@@ -45,8 +45,8 @@ const pttBubble = function (options) {
                     "style": "secondary",
                     "action": {
                         "type": "message",
-                        "label": "股票板熱門",
-                        "text": "股票板熱門"
+                        "label": "看ptt板最新範例",
+                        "text": "高雄板最新"
                     }
                 },
 

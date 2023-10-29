@@ -10,21 +10,21 @@ const headers = {
 const linkPrefix = "https://www.ptt.cc";
 
 const boardNameData = {
-    // "政黑":"hatepolitics",
-    // "軍事":"military",
-    // "高雄":"kaohsiung",
+    "政黑":"hatepolitics",
+    "軍事":"military",
+    "高雄":"kaohsiung",
     "省錢":"lifeismoney",
     "電影":"movie",
     "股票":"stock",
-    // "電蝦":"pc_shopping",
-    // "男女":"boy-girl",
-    // "女孩":"womentalk",
-    // "就可":"joke",
+    "電蝦":"pc_shopping",
+    "男女":"boy-girl",
+    "女孩":"womentalk",
+    "就可":"joke",
     "NBA":"nba",
     "棒球":"baseball",
     "西洽":"c_chat",
-    // "歐兔":"alltogether",
-    // "八卦":"gossiping",
+    "歐兔":"alltogether",
+    "八卦":"gossiping",
 }
 
 const PttDataHandler = {
