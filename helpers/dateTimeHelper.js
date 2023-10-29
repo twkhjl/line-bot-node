@@ -1,6 +1,21 @@
 const now = new Date(new Date().toLocaleString('en', { timeZone: 'Asia/Taipei' }));
 
 const dateTimeHelper = {
+
+    getTimeString:(timestring)=>{
+        const date = new Date(timestring);
+
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const seconds = date.getSeconds();
+        const formatted = `${year}-${addZero(month)}-${addZero(day)} ${addZero(hours)}:${addZero(minutes)}:${addZero(seconds)}`;
+        return formatted;
+
+
+    },
     getCurrentTimeString: () => {
         const year = now.getFullYear();
         const month = now.getMonth() + 1;

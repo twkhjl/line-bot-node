@@ -14,6 +14,10 @@ app.use('/callback', LineRouter);
 
 
 
+// 排程
+const AllCronJobs=require("./cronJobs/AllCronJobs");
+AllCronJobs.start();
+
 app.get('/', (req, res) => {
     res.render('home');
 })

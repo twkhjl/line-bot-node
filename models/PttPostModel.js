@@ -5,6 +5,23 @@ const tableName = "ptt_posts";
 
 const PttPostModel = {
 
+     // 清空整個資料表
+     truncate: () => {
+        
+        const sql = `
+            truncate ${tableName};
+        `;
+        const args = [];
+        return new Promise((resolve, reject) => {
+            db.query(sql, args, (err, rows) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(rows);
+            });
+        });
+    },
+
     // 取得爆文
     select100PushCntWithLimit: (data) => {
         const boardName = data.boardName;
@@ -128,6 +145,36 @@ const PttPostModel = {
                 return resolve(rows);
             });
         });
+    },
+
+    insert: data => {
+        const colArr = [
+            "board_name",
+            "title",
+            "author",
+            "url",
+            "push_cnt",
+            "page_num",
+            "post_date",
+            "created_at",
+        ];
+
+        const colConcatStr = colArr.join(",");
+        const sql = `INSERT INTO ${tableName} (${colConcatStr})
+        VALUES ? 
+        ON DUPLICATE KEY UPDATE updated_at= SYSDATE()`;
+
+        const args = data;
+
+        return new Promise((resolve, reject) => {
+            db.query(sql, [args], (err, rows) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(rows);
+            });
+        });
+
     },
 
 

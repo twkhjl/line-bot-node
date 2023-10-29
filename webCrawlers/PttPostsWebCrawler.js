@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
-const ArrayHelper = require('../../helpers/arrayHelper');
-
+const ArrayHelper = require('../helpers/arrayHelper');
+const dateTimeHelper = require("../helpers/dateTimeHelper");
 const headers = {
     "credentials": "include",
     "Cookie": "over18=1",
@@ -9,38 +9,14 @@ const headers = {
 
 const linkPrefix = "https://www.ptt.cc";
 
-const boardNameData = {
-    // "政黑":"hatepolitics",
-    // "軍事":"military",
-    // "高雄":"kaohsiung",
-    "省錢":"lifeismoney",
-    "電影":"movie",
-    "股票":"stock",
-    // "電蝦":"pc_shopping",
-    // "男女":"boy-girl",
-    // "女孩":"womentalk",
-    // "就可":"joke",
-    "NBA":"nba",
-    "棒球":"baseball",
-    "西洽":"c_chat",
-    // "歐兔":"alltogether",
-    // "八卦":"gossiping",
-}
 
-const PttDataHandler = {
-
-    getBoardNameData:()=>{
-        return boardNameData;
-    },
-
-    getSupportedBoardNameTW:()=>{
-        return Object.keys(boardNameData);
-    },
+const PttPostsWebCrawler = {
 
     // 取得看板總頁數
     getPageTotal: async function (boardName) {
 
         const url = `https://www.ptt.cc/bbs/${boardName}/index.html`;
+
 
         const response = await fetch(url, {
             headers: headers,
@@ -51,13 +27,13 @@ const PttDataHandler = {
 
         const linkData = $('.btn.wide').map((index, obj) => {
             return {
-                link: linkPrefix + $(obj).attr('href'),
+                url: linkPrefix + $(obj).attr('href'),
                 text: $(obj).text(),
             };
         }).get();
         const prevLinkData = linkData.filter(e => e.text.includes("上頁"));
-        if (!prevLinkData[0] || !prevLinkData[0].link) return null;
-        const pageNum = /\/index(\d+)\.html/gi.exec(prevLinkData[0].link)[1];
+        if (!prevLinkData[0] || !prevLinkData[0].url) return null;
+        const pageNum = /\/index(\d+)\.html/gi.exec(prevLinkData[0].url)[1];
         return pageNum * 1 + 1;
 
     },
@@ -77,13 +53,13 @@ const PttDataHandler = {
 
         const linkData = $('.btn.wide').map((index, obj) => {
             return {
-                link: linkPrefix + $(obj).attr('href'),
+                url: linkPrefix + $(obj).attr('href'),
                 text: $(obj).text(),
             };
         }).get();
 
         const prevLinkData = linkData.filter(e => e.text.includes("最舊"));
-        const pageNum = /\?page=(\d+)/gi.exec(prevLinkData[0].link)[1];
+        const pageNum = /\?page=(\d+)/gi.exec(prevLinkData[0].url)[1];
         return pageNum;
 
     },
@@ -105,13 +81,11 @@ const PttDataHandler = {
         let postsOrigin = [];
 
         postsOrigin = $('.r-ent').map((index, obj) => {
-            return {
-                author: $(obj).find('.author').text(),
-                pushCnt: $(obj).find('.nrec span').text(),
-                date: $(obj).find('.date').text(),
-                name: $(obj).find(".title a").text(),
-                link: linkPrefix + $(obj).find(".title a").attr('href'),
-            };
+            return this.getPostData($, obj, {
+                pageNum: pageNum,
+                linkPrefix: linkPrefix
+            });
+
         }).get();
 
         return postsOrigin;
@@ -132,14 +106,13 @@ const PttDataHandler = {
         const $ = cheerio.load(data);
         let postsOrigin = [];
 
+
+
         postsOrigin = $('.r-ent').map((index, obj) => {
-            return {
-                author: $(obj).find('.author').text(),
-                pushCnt: $(obj).find('.nrec span').text(),
-                date: $(obj).find('.date').text(),
-                name: $(obj).find(".title a").text(),
-                link: linkPrefix + $(obj).find(".title a").attr('href'),
-            };
+            return this.getPostData($, obj, {
+                pageNum: pageNum,
+                linkPrefix: linkPrefix
+            });
         }).get();
 
         return postsOrigin;
@@ -176,9 +149,46 @@ const PttDataHandler = {
 
     },
 
+    /* 根據文章連結取得發表時間
+     ptt網址有UNIX timestamp,直接parse即可
+     網址格式範例:
+     https://www.ptt.cc/bbs/HatePolitics/M.1698493410.A.A8F.html
+    */
+
+    getPostDateFromPostUrl: function (postDetailUrl) {
+
+
+        const url = postDetailUrl;
+        const regExResult = /M\.(\d+)\.A/gi.exec(url);
+        if(!regExResult || !regExResult[1]) return null;
+
+        const unixTimeStamp = regExResult[1] * 1000;
+
+        const postDate = dateTimeHelper.getTimeString(unixTimeStamp);
+        return postDate;
+
+    },
+
+    // 從DOM取得所需的文章資料
+    getPostData: function ($, obj, data) {
+
+        const href = $(obj).find(".title a").attr('href');
+        const url = href ? data.linkPrefix + href : null;
+        const postDate = this.getPostDateFromPostUrl(href);
+        return {
+            author: $(obj).find('.author').text(),
+            pushCnt: $(obj).find('.nrec span').text(),
+            pageNum: data.pageNum,
+            postDate: postDate,
+            name: $(obj).find(".title a").text(),
+            url: url,
+        };
+
+    }
+
 
 }
 
 
 
-module.exports = PttDataHandler;
+module.exports = PttPostsWebCrawler;
