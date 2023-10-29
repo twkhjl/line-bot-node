@@ -23,6 +23,7 @@ const FreePlantApiEventHandler = require("./eventHandler/FreePlantApiEventHandle
 const InstructionEventHandler = require("./instruction/InstructionEventHandler");
 const YoutubeEventHandler = require("./eventHandler/google/YoutubeEventhandler");
 const PttPostEventHandler = require("./eventHandler/ptt/PttPostEventHandler");
+const GoogleDoodleGamesEventHandler = require("./eventHandler/google/GoogleDoodleGamesEventHandler");
 
 // event handler
 const EventHandler = async function (req, client, event) {
@@ -69,6 +70,9 @@ const EventHandler = async function (req, client, event) {
 
     // ptt文章顯示相關
     PttPostEventHandler(client,event);
+
+    // google小遊戲
+    GoogleDoodleGamesEventHandler(client,event);
 
     // 取得群組id用
     if (eventMessageText == 'groupid' && groupId) {

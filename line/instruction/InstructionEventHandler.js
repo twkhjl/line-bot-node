@@ -4,6 +4,7 @@ const getImgBubble = require("../flexMessages/bubbles/getImgBubble");
 const getImgBubble2 = require("../flexMessages/bubbles/getImgBubble2");
 const pttBubble = require("../flexMessages/bubbles/pttBubble");
 const tutBubble = require("../flexMessages/bubbles/tutBubble");
+const gameBubble = require("../flexMessages/bubbles/gameBubble");
 const lineReplyHandler = require("../ReplyHandler");
 
 const InstructionEventHandler = function (client, event, options = null) {
@@ -33,10 +34,11 @@ const InstructionEventHandler = function (client, event, options = null) {
             "type": "carousel",
             "contents": [
                 aboutBubble(bubbleConfig),
-                getImgBubble(bubbleConfig),
-                getImgBubble2(bubbleConfig),
                 tutBubble(bubbleConfig),
                 pttBubble(bubbleConfig),
+                getImgBubble(bubbleConfig),
+                getImgBubble2(bubbleConfig),
+                gameBubble(bubbleConfig),
             ]
         };
         return lineReplyHandler.replyWithFlex(client, event, flexMessage);

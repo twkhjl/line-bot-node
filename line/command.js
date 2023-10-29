@@ -14,8 +14,8 @@ const command = {
         },
     },
 
-    google:{
-        youtube:{
+    google: {
+        youtube: {
             multipleResult: {
                 regex: /^yt列表 (.+)$/i,
                 name: "yt列表 {關鍵字}",
@@ -28,11 +28,17 @@ const command = {
                 description: "搜尋youtube並回傳單一影片",
             },
 
-        }
+        },
+        doodle: {
+            regex: /^google小遊戲$/i,
+            name: "google小遊戲",
+            description: "玩google小遊戲",
+
+        },
     },
 
     search: {
-        
+
 
         googleMap: {
             regex: /^mic導航 (.+)到(.+)$/i,
@@ -108,27 +114,27 @@ const command = {
                 description: "從ptt表特版隨機抽帥哥圖",
             }
         },
-        posts:{
-            showSupportedBoardName:{
+        posts: {
+            showSupportedBoardName: {
                 regex: /^mic支援ptt那些板$/i,
                 name: "mic支援ptt那些板",
                 description: "顯示目前所有支援搜尋文章的ptt板名",
             },
-            showHotPosts:{
+            showHotPosts: {
                 regex: /^(.+)板?熱門$/i,
                 name: "{ptt板名}熱門 ex:政黑熱門",
                 description: "顯示ptt特定板面熱門文章(60推以上)",
             },
-            showBooPosts:{
+            showBooPosts: {
                 regex: /^(.+)板?噓文$/i,
                 name: "{ptt板名}噓文 ex:政黑噓文",
                 description: "顯示ptt特定板面噓文較多的文章(X1以上)",
             },
-            showLatestPosts:{
+            showLatestPosts: {
                 regex: /^(.+)板?最新$/i,
                 name: "{ptt板名}最新 ex:政黑最新",
                 description: "顯示ptt特定板面最新文章",
-            }  
+            }
         },
     },
     botLibre: {
