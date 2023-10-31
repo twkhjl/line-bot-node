@@ -44,9 +44,7 @@ const EventHandler = async function (req, client, event) {
 
 
 
-    // chatGPT3.5
-    ChatGptEventHandler(client, event);
-
+    
     // 終極密碼
     guessNumberEventHandler(client, event);
 
@@ -73,6 +71,10 @@ const EventHandler = async function (req, client, event) {
 
     // google小遊戲
     GoogleDoodleGamesEventHandler(client,event);
+
+    // chatGPT3.5
+    ChatGptEventHandler(client, event);
+
 
     // 取得群組id用
     if (eventMessageText == 'groupid' && groupId) {
