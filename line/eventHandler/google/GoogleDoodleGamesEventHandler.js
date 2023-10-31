@@ -2,10 +2,8 @@ const GoogleDoodleModel = require("../../../models/GoogleDoodleModel");
 const commandObj = require("../../command");
 const lineReplyHandler = require("../../ReplyHandler");
 
-const GoogleDoodleGamesEventHandler = async function (client, event) {
-
-    // google小遊戲
-    if (commandObj.google.doodle.regex.exec(event.message.text)) {
+const GoogleDoodleGamesEventHandler = {
+    showAll: async (client, event) => {
 
         let data = await GoogleDoodleModel.all();
 
@@ -51,6 +49,15 @@ const GoogleDoodleGamesEventHandler = async function (client, event) {
         };
 
         return lineReplyHandler.replyWithFlex(client, event, flexMessage);
+
+    }
+}
+const xGoogleDoodleGamesEventHandler = async function (client, event) {
+
+    // google小遊戲
+    if (commandObj.google.doodle.regex.exec(event.message.text)) {
+
+
     }
 
 

@@ -7,10 +7,11 @@ const lineReplyHandler = require("../../ReplyHandler");
 
 const boardNameData = PttDataHandler.getBoardNameData();
 
-const PttPostEventHandler = async function (client, event) {
+
+const PttPostEventHandler = {
 
     // 顯示支援的板名
-    if (commandObj.ptt.posts.showSupportedBoardName.regex.exec(event.message.text)) {
+    getSupportedBoardNameTW: async (client, event) => {
 
         const boardName = PttDataHandler.getSupportedBoardNameTW();
 
@@ -22,10 +23,11 @@ const PttPostEventHandler = async function (client, event) {
         })
 
         return lineReplyHandler.replyWithText(client, event, outputMsg);
-    }
+
+    },
 
     // 熱門文章
-    if (commandObj.ptt.posts.showHotPosts.regex.exec(event.message.text)) {
+    showHotPosts: async (client, event) => {
 
         const regex = new RegExp(commandObj.ptt.posts.showHotPosts.regex);
         const outputArr = regex.exec(event.message.text);
@@ -69,10 +71,11 @@ const PttPostEventHandler = async function (client, event) {
 
 
         return lineReplyHandler.replyWithText(client, event, outputMsg);
-    }
 
-    // 熱門噓文
-    if (commandObj.ptt.posts.showBooPosts.regex.exec(event.message.text)) {
+    },
+
+    showBooPosts: async (client, event) => {
+
         const regex = new RegExp(commandObj.ptt.posts.showBooPosts.regex);
         const outputArr = regex.exec(event.message.text);
 
@@ -113,10 +116,11 @@ const PttPostEventHandler = async function (client, event) {
         }
 
         return lineReplyHandler.replyWithText(client, event, outputMsg);
-    }
 
-    // 最新文章
-    if (commandObj.ptt.posts.showLatestPosts.regex.exec(event.message.text)) {
+    },
+
+    showLatestPosts: async (client, event) => {
+
         const regex = new RegExp(commandObj.ptt.posts.showLatestPosts.regex);
         const outputArr = regex.exec(event.message.text);
 
@@ -147,12 +151,8 @@ const PttPostEventHandler = async function (client, event) {
         }
 
         return lineReplyHandler.replyWithText(client, event, outputMsg);
+
     }
-
-
-
-
-
 
 
 }

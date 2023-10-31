@@ -5,7 +5,6 @@ const lineReplyHandler = require("../../ReplyHandler");
 
 const ChatGptEventHandler = async function (client, event) {
 
-    // 對話
     if (commandObj.botLibre.bot.chatGpt.chat.regex.exec(event.message.text)) {
 
         const regex = new RegExp(commandObj.botLibre.bot.chatGpt.chat.regex);

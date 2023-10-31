@@ -2,12 +2,8 @@ const weatherDataHandler = require("../../API/weather/DataHandler");
 const commandObj = require("../command");
 const lineReplyHandler = require("../ReplyHandler");
 
-
-const WeatherEventHandler = async function (client, event) {
-
-    // 查詢高雄雷達回波圖
-    if (commandObj.showRadarImg.regex.exec(event.message.text)) {
-        
+const WeatherEventHandler = {
+    showRadarImage: async (client, event) => {
         let getRadarImageErr = 0;
         const result = await weatherDataHandler.getRadarImage().catch(err => {
             console.log(err);
@@ -15,37 +11,41 @@ const WeatherEventHandler = async function (client, event) {
             return;
         });
         if (getRadarImageErr) return;
-        if(!result) return;
+        if (!result) return;
         const ProductURL = result.cwaopendata.dataset.resource.ProductURL;
         sentTime = result.cwaopendata.sent;
-        const imgUrl = ProductURL+"?"+sentTime;
+        const imgUrl = ProductURL + "?" + sentTime;
 
 
 
-        return lineReplyHandler.replyWithImg(client,event,imgUrl,imgUrl);
-
+        return lineReplyHandler.replyWithImg(client, event, imgUrl, imgUrl);
     }
-    // 查詢高雄特定行政區明天降雨機率
-    if (commandObj.showRainfullRate.regex.exec(event.message.text)) {
-        const regex = new RegExp(commandObj.showRainfullRate.regex);
-        const outputArr = regex.exec(event.message.text);
-        let districtKeyword = outputArr[1];
+}
 
 
-        if (!districtKeyword.includes("區")) {
-            districtKeyword += "區";
-        }
+const xWeatherEventHandler = async function (client, event) {
 
-        let getRainfullRateErr = 0;
-        const outputMsg = await weatherDataHandler.getRainfullRate(districtKeyword).catch(err => {
+    // 查詢高雄雷達回波圖
+    if (commandObj.utils.weather.showRadarImg.regex.exec(event.message.text)) {
+
+        let getRadarImageErr = 0;
+        const result = await weatherDataHandler.getRadarImage().catch(err => {
             console.log(err);
-            getRainfullRateErr = 1;
+            getRadarImageErr = 1;
             return;
         });
-        if (getRainfullRateErr) return;
-        return lineReplyHandler.replyWithText(client, event, outputMsg);
+        if (getRadarImageErr) return;
+        if (!result) return;
+        const ProductURL = result.cwaopendata.dataset.resource.ProductURL;
+        sentTime = result.cwaopendata.sent;
+        const imgUrl = ProductURL + "?" + sentTime;
+
+
+
+        return lineReplyHandler.replyWithImg(client, event, imgUrl, imgUrl);
 
     }
+
 }
 
 module.exports = WeatherEventHandler;

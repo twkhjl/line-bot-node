@@ -1,22 +1,16 @@
-const MessageRecordModel = require("../models/MessageRecordModel");
 
-const dateTimeHelper = require("../helpers/dateTimeHelper");
 
 const lineApiHandler = require("./ApiHandler");
 const lineReplyHandler = require("./ReplyHandler");
-const ApiHandler = require("./ApiHandler");
 
 // line bot指令
 const commandObj = require("./command");
 
 const guessNumberEventHandler = require("./eventHandler/GuessNumberEventHandler");
 const weatherEventHandler = require("./eventHandler/WeatherEventHandler");
-const ImgEventhandler = require("./eventHandler/ImgEventHandler");
 const TheCatApiEventHandler = require("./eventHandler/TheCatApiEventHandler");
 const DogCeoApiEventHandler = require("./eventHandler/DogCeoApiEventHandler");
 const ShibeOnlineApiEventHandler = require("./eventHandler/ShibeOnlineApiEventHandler");
-const GoogleTranslateEventHandler = require("./eventHandler/GoogleTranslateEventHandler");
-const ReplyHandler = require("./ReplyHandler");
 const PttBeautyEventHandler = require("./eventHandler/ptt/PttBeautyEventHandler");
 const ChatGptEventHandler = require("./eventHandler/botLibre/ChatGptEventHandler");
 const FreePlantApiEventHandler = require("./eventHandler/FreePlantApiEventHandler");
@@ -32,45 +26,108 @@ const EventHandler = async function (req, client, event) {
     const webHookUrl = requestUrl.replace("/callback", "");
 
     const eventMessageText = event.message && event.message.text ? event.message.text : "";
-    const eventMessageType = event.message && event.message.type ? event.message.type : "";
 
-    const userId = event.source && event.source.userId ? event.source.userId : "";
     const groupId = event.source && event.source.groupId ? event.source.groupId : "";
 
-
-
     // 指令教學及輪播
-    InstructionEventHandler(client, event, { webHookUrl: webHookUrl });
+    // InstructionEventHandler(client, event, { webHookUrl: webHookUrl });
 
+    // 顯示教學
+    if (commandObj.instruction.readme.regex.exec(event.message.text)) {
+        return InstructionEventHandler.showReadMeUrl(client,event,{ webHookUrl: webHookUrl });
+    }
 
+    // 顯示指令輪播圖
+    if (commandObj.instruction.carousel.regex.exec(event.message.text)) {
+        return InstructionEventHandler.showQuickCarousel(client,event,{ webHookUrl: webHookUrl });
+    }
 
-    
-    // 終極密碼
-    guessNumberEventHandler(client, event);
+    // 顯示林園雷達回波圖
+    if (commandObj.utils.weather.showRadarImg.regex.exec(event.message.text)) {
+        return weatherEventHandler.showRadarImage(client, event);
+    }
 
     // 貓圖
-    TheCatApiEventHandler(client, event);
+    if (commandObj.img.theCatApi.showRandomImg.regex.exec(event.message.text)) {
+        return TheCatApiEventHandler.getRandomImg(client, event);
+    }
 
     // 狗圖
-    DogCeoApiEventHandler(client, event);
+    if (commandObj.img.dogCeoApi.showRandomImg.regex.exec(event.message.text)) {
+        return DogCeoApiEventHandler.getRandomImg(client,event);
+    }
 
     // 柴柴圖
-    ShibeOnlineApiEventHandler(client, event);
-
+    if (commandObj.img.shibeOnlineApi.showRandomImg.regex.exec(event.message.text)) {
+        return ShibeOnlineApiEventHandler.getRandomImg(client,event);
+    }
+    
     // 植物圖
-    FreePlantApiEventHandler(client, event);
+    if (commandObj.img.freePlantApi.showRandomImg.regex.exec(event.message.text)) {
+        return FreePlantApiEventHandler.getRandomImg(client,event);
+    }
 
     // ptt表特版
-    PttBeautyEventHandler(client, event);
+    // 隨機正妹圖(資料庫)
+    if (commandObj.ptt.beauty.showRandomFemaleImg.regex.exec(event.message.text)) {
+        return PttBeautyEventHandler.getRandomFemaleImg(client,event);
+    }
+    // 隨機帥哥圖(資料庫)
+    if (commandObj.ptt.beauty.showRandomMaleImg.regex.exec(event.message.text)) {
+        return PttBeautyEventHandler.getRandomMaleImg(client,event);
+
+    }
 
     // 搜尋yt
-    YoutubeEventHandler(client,event);
+    // 回傳多個結果(使用網址)
+    if (commandObj.google.youtube.multipleResult.regex.exec(event.message.text)) {
+        return YoutubeEventHandler.urlMultipleResult(client,event);
+    }
+    // 回傳單一結果(使用api)
+    if (commandObj.google.youtube.apiSingleResult.regex.exec(event.message.text)) {
+        return YoutubeEventHandler.apiSingleResult(client,event);
+    }
 
     // ptt文章顯示相關
-    PttPostEventHandler(client,event);
+    // 顯示支援板名
+    if (commandObj.ptt.posts.showSupportedBoardName.regex.exec(event.message.text)) {
+        return PttPostEventHandler.getSupportedBoardNameTW(client,event);
+    }
+    // 顯示熱門文章
+    if (commandObj.ptt.posts.showHotPosts.regex.exec(event.message.text)) {
+        return PttPostEventHandler.showHotPosts(client,event);
+    }
+    // 顯示噓文
+    if (commandObj.ptt.posts.showBooPosts.regex.exec(event.message.text)) {
+        return PttPostEventHandler.showBooPosts(client,event);
+    }
+    // 顯示最新文章
+    if (commandObj.ptt.posts.showLatestPosts.regex.exec(event.message.text)) {
+        return PttPostEventHandler.showLatestPosts(client,event);
+    }
 
     // google小遊戲
-    GoogleDoodleGamesEventHandler(client,event);
+    if (commandObj.google.doodle.regex.exec(event.message.text)) {
+        return GoogleDoodleGamesEventHandler.showAll(client,event);
+    }
+
+    // google導航
+    // https://www.google.com.tw/maps/dir/地點1/地點2
+    if (commandObj.search.googleMap.regex.exec(eventMessageText)) {
+
+        const regex = new RegExp(commandObj.search.googleMap.regex);
+        const outputArr = regex.exec(eventMessageText);
+        const startLocation = outputArr[1];
+        const goal = outputArr[2];
+        const outputMsg = `https://www.google.com.tw/maps/dir/${startLocation}/${goal}`;
+
+        return lineReplyHandler.replyWithText(client, event, outputMsg);
+
+
+    }
+
+    // 終極密碼
+    guessNumberEventHandler(client, event);
 
     // chatGPT3.5
     ChatGptEventHandler(client, event);
@@ -89,22 +146,6 @@ const EventHandler = async function (req, client, event) {
     }
 
     
-
-
-    // google導航
-    // https://www.google.com.tw/maps/dir/地點1/地點2
-    if (commandObj.search.googleMap.regex.exec(eventMessageText)) {
-
-        const regex = new RegExp(commandObj.search.googleMap.regex);
-        const outputArr = regex.exec(eventMessageText);
-        const startLocation = outputArr[1];
-        const goal = outputArr[2];
-        const outputMsg = `https://www.google.com.tw/maps/dir/${startLocation}/${goal}`;
-
-        return lineReplyHandler.replyWithText(client, event, outputMsg);
-
-
-    }
 
 
 }

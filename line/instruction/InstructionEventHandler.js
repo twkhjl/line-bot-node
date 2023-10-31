@@ -1,30 +1,35 @@
 const commandObj = require("../command");
-const aboutBubble = require("../flexMessages/bubbles/aboutBubble");
-const getImgBubble = require("../flexMessages/bubbles/getImgBubble");
-const getImgBubble2 = require("../flexMessages/bubbles/getImgBubble2");
-const pttBubble = require("../flexMessages/bubbles/pttBubble");
-const tutBubble = require("../flexMessages/bubbles/tutBubble");
-const gameBubble = require("../flexMessages/bubbles/gameBubble");
 const lineReplyHandler = require("../ReplyHandler");
 
-const InstructionEventHandler = function (client, event, options = null) {
+const InstructionEventHandler = {
 
-    const webHookUrl = options.webHookUrl || null;
-    // 顯示教學
-    if (commandObj.instruction.readme.regex.exec(event.message.text)) {
+    showReadMeUrl: (client, event, options = null) => {
 
-        let outputMsg = "";
-        if (webHookUrl) {
-            outputMsg = `請參考指令教學網址:\n${webHookUrl}/readme`;
+        const webHookUrl = options.webHookUrl || null;
+        // 顯示教學
+        if (commandObj.instruction.readme.regex.exec(event.message.text)) {
+
+            let outputMsg = "";
+            if (webHookUrl) {
+                outputMsg = `請參考指令教學網址:\n${webHookUrl}/readme`;
+            }
+
+            if (!outputMsg) return null;
+
+            return lineReplyHandler.replyWithText(client, event, outputMsg);
         }
 
-        if (!outputMsg) return null;
+    },
+    showQuickCarousel: (client, event,options) => {
 
-        return lineReplyHandler.replyWithText(client, event, outputMsg);
-    }
+        const webHookUrl = options.webHookUrl || null;
 
-    // 顯示指令輪播圖
-    if (commandObj.instruction.carousel.regex.exec(event.message.text)) {
+        const aboutBubble = require("../flexMessages/bubbles/aboutBubble");
+        const getImgBubble = require("../flexMessages/bubbles/getImgBubble");
+        const getImgBubble2 = require("../flexMessages/bubbles/getImgBubble2");
+        const pttBubble = require("../flexMessages/bubbles/pttBubble");
+        const tutBubble = require("../flexMessages/bubbles/tutBubble");
+        const gameBubble = require("../flexMessages/bubbles/gameBubble");
 
         const bubbleSize = "kilo";
 
@@ -44,6 +49,5 @@ const InstructionEventHandler = function (client, event, options = null) {
         return lineReplyHandler.replyWithFlex(client, event, flexMessage);
     }
 }
-
 
 module.exports = InstructionEventHandler;

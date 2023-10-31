@@ -1,10 +1,9 @@
 const commandObj = require("../command");
 const lineReplyHandler = require("../ReplyHandler");
 const freePlantApi = require('../../API/imgs/FreePlantApi');
-const FreePlantApiEventHandler = async function (client, event) {
 
-    if (commandObj.img.freePlantApi.showRandomImg.regex.exec(event.message.text)) {
-
+const FreePlantApiEventHandler = {
+    getRandomImg: async (client, event) => {
         let getRandomImgErr = 0;
         const imgs = await freePlantApi.getRandomImg().catch(err => {
             getRandomImgErr = 1;
@@ -16,10 +15,7 @@ const FreePlantApiEventHandler = async function (client, event) {
         const imgUrl = imgs.small_url;
 
         return lineReplyHandler.replyWithImg(client, event, imgUrl, imgUrl);
-
     }
-
-
 }
 
 module.exports = FreePlantApiEventHandler;

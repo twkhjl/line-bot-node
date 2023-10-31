@@ -37,6 +37,17 @@ const command = {
         },
     },
 
+    utils:{
+        weather:{
+            showRadarImg: {
+                regex: /^雷達回波圖$/,
+                name: "雷達回波圖",
+                description: "顯示高雄的雷達回波圖",
+        
+            },
+        }
+    },
+
     search: {
 
 
