@@ -2,7 +2,7 @@ require('dotenv').config();
 const fetch = require('node-fetch');
 const { XMLParser, XMLBuilder, XMLValidator } = require("fast-xml-parser");
 
-const messageSetting = "你現在是一個叫做Mic的聊天機器人,請使用繁體中文跟我對話;";
+const messageSetting = process.env.BOT_SETTING;
 
 
 const ChatGptDataHandler = {

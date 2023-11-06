@@ -30,6 +30,7 @@ const InstructionEventHandler = {
         const pttBubble = require("../flexMessages/bubbles/pttBubble");
         const tutBubble = require("../flexMessages/bubbles/tutBubble");
         const gameBubble = require("../flexMessages/bubbles/gameBubble");
+        const utilBubble = require("../flexMessages/bubbles/utilBubble");
 
         const bubbleSize = "kilo";
 
@@ -44,6 +45,7 @@ const InstructionEventHandler = {
                 getImgBubble(bubbleConfig),
                 getImgBubble2(bubbleConfig),
                 gameBubble(bubbleConfig),
+                utilBubble(bubbleConfig),
             ]
         };
         return lineReplyHandler.replyWithFlex(client, event, flexMessage);

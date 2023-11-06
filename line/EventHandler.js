@@ -22,6 +22,10 @@ const GoogleDoodleGamesEventHandler = require("./eventHandler/google/GoogleDoodl
 // event handler
 const EventHandler = async function (req, client, event) {
 
+    if(!req) return;
+    if(!client) return;
+    if(!event || !event.message || !event.message.text) return;
+
     const requestUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     const webHookUrl = requestUrl.replace("/callback", "");
 
