@@ -18,13 +18,14 @@ const InstructionEventHandler = require("./instruction/InstructionEventHandler")
 const YoutubeEventHandler = require("./eventHandler/google/YoutubeEventhandler");
 const PttPostEventHandler = require("./eventHandler/ptt/PttPostEventHandler");
 const GoogleDoodleGamesEventHandler = require("./eventHandler/google/GoogleDoodleGamesEventHandler");
+const numHelper = require("../helpers/numHelper");
 
 // event handler
 const EventHandler = async function (req, client, event) {
 
-    if(!req) return;
-    if(!client) return;
-    if(!event || !event.message || !event.message.text) return;
+    if (!req) return;
+    if (!client) return;
+    if (!event || !event.message || !event.message.text) return;
 
     const requestUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     const webHookUrl = requestUrl.replace("/callback", "");
@@ -38,12 +39,12 @@ const EventHandler = async function (req, client, event) {
 
     // 顯示教學
     if (commandObj.instruction.readme.regex.exec(event.message.text)) {
-        return InstructionEventHandler.showReadMeUrl(client,event,{ webHookUrl: webHookUrl });
+        return InstructionEventHandler.showReadMeUrl(client, event, { webHookUrl: webHookUrl });
     }
 
     // 顯示指令輪播圖
     if (commandObj.instruction.carousel.regex.exec(event.message.text)) {
-        return InstructionEventHandler.showQuickCarousel(client,event,{ webHookUrl: webHookUrl });
+        return InstructionEventHandler.showQuickCarousel(client, event, { webHookUrl: webHookUrl });
     }
 
     // 顯示林園雷達回波圖
@@ -58,61 +59,61 @@ const EventHandler = async function (req, client, event) {
 
     // 狗圖
     if (commandObj.img.dogCeoApi.showRandomImg.regex.exec(event.message.text)) {
-        return DogCeoApiEventHandler.getRandomImg(client,event);
+        return DogCeoApiEventHandler.getRandomImg(client, event);
     }
 
     // 柴柴圖
     if (commandObj.img.shibeOnlineApi.showRandomImg.regex.exec(event.message.text)) {
-        return ShibeOnlineApiEventHandler.getRandomImg(client,event);
+        return ShibeOnlineApiEventHandler.getRandomImg(client, event);
     }
-    
+
     // 植物圖
     if (commandObj.img.freePlantApi.showRandomImg.regex.exec(event.message.text)) {
-        return FreePlantApiEventHandler.getRandomImg(client,event);
+        return FreePlantApiEventHandler.getRandomImg(client, event);
     }
 
     // ptt表特版
     // 隨機正妹圖(資料庫)
     if (commandObj.ptt.beauty.showRandomFemaleImg.regex.exec(event.message.text)) {
-        return PttBeautyEventHandler.getRandomFemaleImg(client,event);
+        return PttBeautyEventHandler.getRandomFemaleImg(client, event);
     }
     // 隨機帥哥圖(資料庫)
     if (commandObj.ptt.beauty.showRandomMaleImg.regex.exec(event.message.text)) {
-        return PttBeautyEventHandler.getRandomMaleImg(client,event);
+        return PttBeautyEventHandler.getRandomMaleImg(client, event);
 
     }
 
     // 搜尋yt
     // 回傳多個結果(使用網址)
     if (commandObj.google.youtube.multipleResult.regex.exec(event.message.text)) {
-        return YoutubeEventHandler.urlMultipleResult(client,event);
+        return YoutubeEventHandler.urlMultipleResult(client, event);
     }
     // 回傳單一結果(使用api)
     if (commandObj.google.youtube.apiSingleResult.regex.exec(event.message.text)) {
-        return YoutubeEventHandler.apiSingleResult(client,event);
+        return YoutubeEventHandler.apiSingleResult(client, event);
     }
 
     // ptt文章顯示相關
     // 顯示支援板名
     if (commandObj.ptt.posts.showSupportedBoardName.regex.exec(event.message.text)) {
-        return PttPostEventHandler.getSupportedBoardNameTW(client,event);
+        return PttPostEventHandler.getSupportedBoardNameTW(client, event);
     }
     // 顯示熱門文章
     if (commandObj.ptt.posts.showHotPosts.regex.exec(event.message.text)) {
-        return PttPostEventHandler.showHotPosts(client,event);
+        return PttPostEventHandler.showHotPosts(client, event);
     }
     // 顯示噓文
     if (commandObj.ptt.posts.showBooPosts.regex.exec(event.message.text)) {
-        return PttPostEventHandler.showBooPosts(client,event);
+        return PttPostEventHandler.showBooPosts(client, event);
     }
     // 顯示最新文章
     if (commandObj.ptt.posts.showLatestPosts.regex.exec(event.message.text)) {
-        return PttPostEventHandler.showLatestPosts(client,event);
+        return PttPostEventHandler.showLatestPosts(client, event);
     }
 
     // google小遊戲
     if (commandObj.google.doodle.regex.exec(event.message.text)) {
-        return GoogleDoodleGamesEventHandler.showAll(client,event);
+        return GoogleDoodleGamesEventHandler.showAll(client, event);
     }
 
     // google導航
@@ -130,26 +131,28 @@ const EventHandler = async function (req, client, event) {
 
     }
 
-    // 終極密碼
-    guessNumberEventHandler(client, event);
+    const guessNumberDataHandler = require("../games/guessNumber/DataHandler");
+    const condGuessNumber = {
+        startGame: commandObj.game.guessNumber.startGame.regex.exec(eventMessageText),
+        starting: (function() {
+            groupData = guessNumberDataHandler.findByGroupId(groupId);
+            if (!groupData) return false;
+            return groupId && groupData && groupData.phase;
+        })(),
+        endGame: commandObj.game.guessNumber.endGame.regex.exec(eventMessageText),
+
+    };
+
+    if(condGuessNumber.startGame || condGuessNumber.endGame || (condGuessNumber && numHelper.isPositiveInteger(eventMessageText))){
+        // 終極密碼
+        guessNumberEventHandler(client, event);
+    }
+
+
 
     // chatGPT3.5
     ChatGptEventHandler(client, event);
 
-
-    // 取得群組id用
-    if (eventMessageText == 'groupid' && groupId) {
-
-        let groupSummaryErr = 0;
-        const output = await lineApiHandler.groupSummary(groupId).catch(() => {
-            groupSummaryErr = 1;
-            return console.log("err")
-        });
-        if (groupSummaryErr) return;
-        return console.log(output);
-    }
-
-    
 
 
 }
