@@ -30,7 +30,7 @@ const getImgBubble2 = function (options) {
                     "action": {
                         "type": "message",
                         "label": "抽狗圖",
-                        "text": "mic狗呢"
+                        "text": "狗呢"
                     }
                 },
                 {
@@ -39,7 +39,7 @@ const getImgBubble2 = function (options) {
                     "action": {
                         "type": "message",
                         "label": "抽柴柴圖",
-                        "text": "mic柴柴呢"
+                        "text": "柴柴呢"
                     }
                 },
                 {
@@ -48,7 +48,7 @@ const getImgBubble2 = function (options) {
                     "action": {
                         "type": "message",
                         "label": "抽植物圖",
-                        "text": "mic植物呢"
+                        "text": "植物呢"
                     }
                 },
 

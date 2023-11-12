@@ -79,32 +79,32 @@ const command = {
     img: {
         theCatApi: {
             showRandomImg: {
-                regex: /^mic貓呢$/,
-                name: "mic貓呢",
+                regex: /^(mic)?貓呢$/,
+                name: "貓呢",
                 description: "抽隨機喵咪圖",
 
             }
         },
         dogCeoApi: {
             showRandomImg: {
-                regex: /^mic狗呢$/,
-                name: "mic狗呢",
+                regex: /^(mic)?狗呢$/,
+                name: "狗呢",
                 description: "抽隨機狗狗圖",
 
             }
         },
         shibeOnlineApi: {
             showRandomImg: {
-                regex: /^mic柴柴呢$/,
-                name: "mic柴柴呢",
+                regex: /^(mic)?柴柴呢$/,
+                name: "柴柴呢",
                 description: "抽隨機柴柴圖",
 
             }
         },
         freePlantApi: {
             showRandomImg: {
-                regex: /^mic植物呢$/,
-                name: "mic植物呢",
+                regex: /^(mic)?植物呢$/,
+                name: "植物呢",
                 description: "抽隨機植物圖",
 
             }
@@ -115,13 +115,13 @@ const command = {
     ptt: {
         beauty: {
             showRandomFemaleImg: {
-                regex: /^mic(妹子|正妹)呢$/i,
-                name: "mic妹子/正妹呢",
+                regex: /^(mic)?(妹子|正妹)呢$/i,
+                name: "妹子/正妹呢",
                 description: "從ptt表特版隨機抽正妹圖",
             },
             showRandomMaleImg: {
-                regex: /^mic帥哥呢$/i,
-                name: "mic帥哥呢",
+                regex: /^(mic)?帥哥呢$/i,
+                name: "帥哥呢",
                 description: "從ptt表特版隨機抽帥哥圖",
             }
         },
