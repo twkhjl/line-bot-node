@@ -28,6 +28,11 @@ const GuessNumberEventHandler = function (client, event) {
     const eventMessageText = event.message && event.message.text ? event.message.text : "";
     const groupId = event.source && event.source.groupId ? event.source.groupId : "";
 
+    if(!groupId){
+        const outputMsg = "目前終極密碼只支援群組,請先將mic邀入群組才能玩0.0";
+        return lineReplyHandler.replyWithText(client, event, outputMsg);
+    }
+
     if (commandObj.game.guessNumber.startGame.regex.exec(event.message.text)
         && !validator.isCurrentlyPlaying(groupId)
     ) {
@@ -56,7 +61,6 @@ const GuessNumberEventHandler = function (client, event) {
         const maxNumber = eventMessageText * 1;
         dataHandler.configureBeforeGameStart(groupId, minNumber, maxNumber);
 
-        console.log(gameData.groupData);
         const outputMsg = `遊戲開始，數字為${minNumber}~${maxNumber}`;
         return lineReplyHandler.replyWithText(client, event, outputMsg);
 

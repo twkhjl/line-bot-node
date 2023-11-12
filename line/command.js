@@ -154,7 +154,7 @@ const command = {
                 chat: {
                     regex: /^@mic(.+)$/i,
                     name: "@mic {對話內容}",
-                    description: "跟mic聊天",
+                    description: "跟mic聊天. 在一對一聊天中,開頭不必加上'@mic'",
 
                 }
 
